@@ -464,7 +464,7 @@ public class WordListActivity extends AppCompatActivity {
         try {
             fos = new FileOutputStream(file);
             out = new OutputStreamWriter(fos, "euc-kr");
-            out.write("ID_word,names,memos,\n");
+            out.write("ID_word,names,mean,memo,pronunciation\n");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -477,9 +477,13 @@ public class WordListActivity extends AppCompatActivity {
             Content_Word cw = db_word.getContent(IDs[i]);
             String text1 = cw.getText1();
             String text2 = cw.getText2();
+            String text3 = cw.getText3();
+            String text4 = cw.getText4();
             text1= Manager_SystemControl.Convert_CSV_String(text1);
             text2= Manager_SystemControl.Convert_CSV_String(text2);
-            String strWrite =IDs[i] +","+ text1 +","+ text2 + ",\n";
+            text3= Manager_SystemControl.Convert_CSV_String(text3);
+            text4= Manager_SystemControl.Convert_CSV_String(text4);
+            String strWrite =IDs[i] +","+ text1 +","+ text2 + text3 + text4 + ",\n";
             try {
                 out.write(strWrite);
             } catch (Exception e) {
@@ -544,7 +548,9 @@ public class WordListActivity extends AppCompatActivity {
                 if(row.length>2){
                     text2 = row[2];
                 }
-                int id = AddWord(text1, text2);
+                String text3=row[3];
+                String text4=row[4];
+                int id = db_word.addContent(new Content_Word(text1, text2, text3, text4));
 
                 int csvID = Integer.parseInt(row[0]);
                 ImagePathName = ExportedBookDataFolder + Manager_PreviewImage.getPreviewImageFileName(csvID);
@@ -1245,7 +1251,10 @@ public class WordListActivity extends AppCompatActivity {
 
         protected Void doInBackground(Void... args) {
             if(zipFile_ExportedBookData==null) finish();
-            File file = new File(zipFile_ExportedBookData);if(!file.exists()) finish();
+            File file = new File(zipFile_ExportedBookData);
+            if(!file.exists()) {
+                finish();
+            }
             String path = Manager_SystemControl.getPathFromPathName(zipFile_ExportedBookData);
             String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(zipFile_ExportedBookData);
             String fn = Manager_SystemControl.getFileName(zipFile_ExportedBookData);
@@ -1260,7 +1269,7 @@ public class WordListActivity extends AppCompatActivity {
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
-            //ReadWordDataBase();
+            ReadWordDataBase();
             DisplayList();
 
         }
@@ -1298,11 +1307,11 @@ public class WordListActivity extends AppCompatActivity {
             //Toast.makeText(WordListActivity.this,"다운로드 폴더에 저장했습니다." ,Toast.LENGTH_LONG).show();
         }
     }
-    private static class ImportWordsFromPictureFolder extends AsyncTask<Void, Void, Void> {
+    private static class ImportWordsFromPictureFolder_old extends AsyncTask<Void, Void, Void> {
         private ProgressDialog dialog;
         private String pictureFolderPath;
 
-        public ImportWordsFromPictureFolder(WordListActivity activity, String pictureFolderPath) {
+        ImportWordsFromPictureFolder_old(WordListActivity activity, String pictureFolderPath) {
             dialog = new ProgressDialog(activity);
             this.pictureFolderPath =  pictureFolderPath;
         }
@@ -1320,12 +1329,59 @@ public class WordListActivity extends AppCompatActivity {
                 String ext = Manager_SystemControl.getExtension(fn).toLowerCase();
                 String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(fn);
                 if(ext.equals("png") || ext.equals("jpg")){
-                    //AddWord(fn,fnwoext," ");
                     if(fnwoext.length() != 0){
                         int id = db_word.addContent(new Content_Word(fnwoext, " "));
                         Manager_PreviewImage.setPreviewImage(fn,id);
                         setHasImage(id,true);
                     }
+                }
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            // do UI work here
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            //Toast.makeText(getApplicationContext(),"폴더에 있는 그림파일을 추가했습니다." ,Toast.LENGTH_LONG).show();
+            ReadWordDataBase();
+            DisplayList();
+        }
+    }
+    private static class ImportWordsFromPictureFolder extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog dialog;
+        private String pictureFolderPath;
+        private String[] pathNames;
+        private int numFile;
+
+        ImportWordsFromPictureFolder(WordListActivity activity, String pictureFolderPath) {
+            dialog = new ProgressDialog(activity);
+            this.pictureFolderPath =  pictureFolderPath;
+        }
+        @Override
+        protected void onPreExecute() {
+            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dialog.setMessage("폴더에 있는 그림파일을 불러오고 있습니다.");
+            dialog.setCancelable(false);
+            dialog.show();
+
+            pathNames = Manager_SystemControl.getAllFilePathNames(pictureFolderPath,new String[] {"png","jpg"});
+            numFile = pathNames.length;
+
+            dialog.setMax(numFile);
+        }
+
+        protected Void doInBackground(Void... args) {
+            int i=0;
+            for(String fn : pathNames){
+                String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(fn);
+                if(fnwoext.length() != 0){
+                    int id = db_word.addContent(new Content_Word(fnwoext, " "));
+                    Manager_PreviewImage.setPreviewImage(fn,id);
+                    setHasImage(id,true);
+                    dialog.setProgress(i);
+                    i+=1;
                 }
             }
             return null;
@@ -1430,8 +1486,6 @@ public class WordListActivity extends AppCompatActivity {
             DisplayList();
             return true;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 }

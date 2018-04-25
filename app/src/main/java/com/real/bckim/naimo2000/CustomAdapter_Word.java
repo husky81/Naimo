@@ -47,16 +47,34 @@ public class CustomAdapter_Word extends BaseAdapter {
         boolean[] tmpCheckBoxState = new boolean[contents.size()];
         setCheckBoxState(tmpCheckBoxState);
     }
+    static class ViewHolder {
+            ImageView icon;
+            TextView word;
+            TextView text;
+            CheckBox chkBox;
+            TextView txtO;
+            TextView txtX;
+            TextView txtFami;
+            int position;
+    }
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        view = inflter.inflate(R.layout.listview_word, null);
-        ImageView icon = view.findViewById(R.id.icon_word);
-        TextView word = view.findViewById(R.id.wordName);
-        TextView text = view.findViewById(R.id.memoText_word);
-        CheckBox chkBox = view.findViewById(R.id.checkBox_word);
-        TextView txtO = view.findViewById(R.id.txtView_numO);
-        TextView txtX = view.findViewById(R.id.txtView_numX);
-        TextView txtFami = view.findViewById(R.id.txtView_familiarity);
+        ViewHolder holder;
+
+        if(view==null){
+            view = inflter.inflate(R.layout.listview_word, null);
+            holder = new ViewHolder();
+            view.setTag(holder);
+            holder.icon = view.findViewById(R.id.icon_word);
+            holder.word = view.findViewById(R.id.wordName);
+            holder.text = view.findViewById(R.id.memoText_word);
+            holder.chkBox = view.findViewById(R.id.checkBox_word);
+            holder.txtO = view.findViewById(R.id.txtView_numO);
+            holder.txtX = view.findViewById(R.id.txtView_numX);
+            holder.txtFami = view.findViewById(R.id.txtView_familiarity);
+        }else{
+            holder = (ViewHolder) view.getTag();
+        }
 
         Content_Word cw = contents.get(i);
 
@@ -64,12 +82,12 @@ public class CustomAdapter_Word extends BaseAdapter {
 
         if(cw.getHasImage()){
             Bitmap bm = Manager_PreviewImage.getPreviewImage(cw.getID());
-            icon.setVisibility(View.VISIBLE);
-            icon.setImageBitmap(bm);
+            holder.icon.setVisibility(View.VISIBLE);
+            holder.icon.setImageBitmap(bm);
             numQuizItem+=1;
         }else{
-            icon.setVisibility(View.GONE);
-            icon.setImageResource(WordListActivity.EmptyImageIconResource);
+            holder.icon.setVisibility(View.GONE);
+            holder.icon.setImageResource(WordListActivity.EmptyImageIconResource);
         }
 
         String text1 = cw.getText1();
@@ -90,7 +108,7 @@ public class CustomAdapter_Word extends BaseAdapter {
                 SpannableStringBuilder builder = new SpannableStringBuilder();
                 builder.append(s1);
                 builder.append(s2);
-                word.setText(builder);
+                holder.word.setText(builder);
                 //ref. https://stackoverflow.com/questions/1529068/is-it-possible-to-have-multiple-styles-inside-a-textview
                 // enables clicking on spans for clickable span and url span
                 //textView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -101,39 +119,39 @@ public class CustomAdapter_Word extends BaseAdapter {
                 s1.setSpan(new StyleSpan(Typeface.BOLD), 0, s1.length(), flag);
                 SpannableStringBuilder builder = new SpannableStringBuilder();
                 builder.append(s1);
-                word.setText(builder);
+                holder.word.setText(builder);
             }
         }else{
-            word.setText("");
+            holder.word.setText("");
         }
 //            word.setText(Html.fromHtml("<b>" + "title" + "</b>" +  "<br />" +
 //                    "<small>" + "description" + "</small>" + "<br />" +
 //                    "<small>" + "DateAdded" + "</small>"));
 
         if(text2!=null && text2.length()>0) {
-            text.setText(text2);
+            holder.text.setText(text2);
             numQuizItem+=1;
         }else{
-            text.setText("");
+            holder.text.setText("");
         }
 
         if(numQuizItem<2){
-            word.setTextColor(context.getResources().getColor(R.color.listTextGrey));
+            holder.word.setTextColor(context.getResources().getColor(R.color.listTextGrey));
         }else{
-            word.setTextColor(context.getResources().getColor(R.color.listTextBlack));
+            holder.word.setTextColor(context.getResources().getColor(R.color.listTextBlack));
         }
 
-        txtO.setText(String.valueOf(cw.getNumCorrect()));
-        txtX.setText(String.valueOf(cw.getNumWrong()));
+        holder.txtO.setText(String.valueOf(cw.getNumCorrect()));
+        holder.txtX.setText(String.valueOf(cw.getNumWrong()));
         String strFamiliarity =context.getString(R.string.Familiarity) + ":" + cw.getFamiliarity();
-        txtFami.setText(strFamiliarity);
+        holder.txtFami.setText(strFamiliarity);
 
         if(checkBoxVisible){
-            chkBox.setVisibility(View.VISIBLE);
-            chkBox.setWidth(120);
-            chkBox.setChecked(checkBoxState[i]);
+            holder.chkBox.setVisibility(View.VISIBLE);
+            holder.chkBox.setWidth(120);
+            holder.chkBox.setChecked(checkBoxState[i]);
             final int checkBoxPosition = i;
-            chkBox.setOnClickListener(new View.OnClickListener() {
+            holder.chkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     checkBoxState[checkBoxPosition]=!checkBoxState[checkBoxPosition];
@@ -141,8 +159,8 @@ public class CustomAdapter_Word extends BaseAdapter {
             });
         }else{
             //chkBox.setVisibility(View.INVISIBLE);
-            chkBox.setVisibility(View.GONE);
-            chkBox.setWidth(0);
+            holder.chkBox.setVisibility(View.GONE);
+            holder.chkBox.setWidth(0);
         }
         return view;
     }

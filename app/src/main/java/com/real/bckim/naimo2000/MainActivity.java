@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static final int REQ_CODE_DOWNLOAD_DAUM_OPEN_WORD_NOTE=300;
     static final int RLT_CODE_DOWNLOAD_DAUM_OPEN_WORD_NOTE=301;
     static final int REQ_CODE_IMPORT_CONTACT_PICTURES=302;
-    static final int REQ_ADD_SAMPLE_NOTE_PRESIDENTS=303;
+    static final int REQ_ADD_SAMPLE_NOTES =303;
 
     AlertDialog dialog_book_edit;
     Bitmap image_bitmap; //메모리 절약을 위해 비트맵은 Activity마다 한개만 쓰면 좋을 듯.
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (IDs.length < 1) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission
-                    .WRITE_EXTERNAL_STORAGE}, REQ_ADD_SAMPLE_NOTE_PRESIDENTS);
+                    .WRITE_EXTERNAL_STORAGE}, REQ_ADD_SAMPLE_NOTES);
         }
     }
     private void ToolbarFabDrawerNaviewSetting(){
@@ -118,9 +119,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case (REQ_ADD_SAMPLE_NOTE_PRESIDENTS): {
+            case (REQ_ADD_SAMPLE_NOTES): {
+                Manager_SystemControl.makeFolder(NaimoDataExportPath);
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Manager_SystemControl.makeFolder(NaimoDataExportPath);
                     AddSampleBook_Presidents();
                 } else {
                     Toast.makeText(this, "단어장을 사용하기 위해서는 외부 저장장치 읽기/쓰기 권한이 필요합니다.", Toast.LENGTH_LONG).show();
@@ -288,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         builder.setView(view);
         ImageView icon = view.findViewById(R.id.imageIcon);
         Button submit = view.findViewById(R.id.buttonSubmit);
-        Button delete = view.findViewById(R.id.buttonDelete);
+        ImageButton delete = view.findViewById(R.id.buttonDelete);
         final EditText editText1 = view.findViewById(R.id.edittextBookName);
         final EditText editText2 = view.findViewById(R.id.edittextBookMemo);
 
@@ -307,7 +308,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         editText1.setText(text1);
         editText2.setText(text2);
         submit.setText(R.string.ok);
-        delete.setText(R.string.delete);
 
         dialog_book_edit = builder.create();
         icon.setOnClickListener(new View.OnClickListener() {

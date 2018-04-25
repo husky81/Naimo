@@ -73,8 +73,7 @@ public class Manager_SystemControl {
     }
     public static String getFileNameWithoutExtensionFromPathName(String PathName){
         String FileName = getFileName(PathName);
-        String FileNameWithoutExtension = getFileNameWithoutExtensionFromFileName(FileName);
-        return FileNameWithoutExtension;
+        return getFileNameWithoutExtensionFromFileName(FileName).toLowerCase();
     }
     public static String getPathFromPathName(String PathName){
         File file = new File(PathName);
@@ -125,6 +124,32 @@ public class Manager_SystemControl {
             }
         }
         return allFiles;
+    }
+    public static String[] getAllFilePathNames(String FolderPath,String[] extensions){
+        File dir = new File(FolderPath);
+        String pathName;
+        String ext;
+        boolean extMatch;
+        ArrayList<String> pathNameList = new ArrayList<>();
+
+        for(int i=0;i<extensions.length;i++){
+            extensions[i] = extensions[i].toLowerCase();
+        }
+
+        for (File f : dir.listFiles()) {
+            if (f.isFile()){
+                pathName = f.getPath();
+                ext = Manager_SystemControl.getExtension(pathName).toLowerCase();
+                extMatch=false;
+                for (String extension : extensions) {
+                    if (ext.equals(extension)) extMatch = true;
+                }
+                if(extMatch) {
+                    pathNameList.add(pathName);
+                }
+            }
+        }
+        return pathNameList.toArray(new String[pathNameList.size()]);
     }
     public static String getDownloadPath(){
         File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
