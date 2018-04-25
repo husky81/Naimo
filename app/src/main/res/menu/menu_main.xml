@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/import_wordNote_DAUM"
+        android:title="DAUM 공개단어장 불러오기" />
+    <item
+        android:enabled="true"
+        android:icon="@drawable/plus_note"
+        android:orderInCategory="100"
+        android:title="Add sample note"
+        android:visible="true" >
+        <menu >
+            <item
+                android:id="@+id/add_sample_note_presidents"
+                android:title="Presidents" />
+            <item
+                android:id="@+id/add_sample_note_natinal_flags"
+                android:title="National flags" />
+            <item
+                android:id="@+id/add_sample_note_president_rok"
+                android:title="한국의대통령" />
+            <item
+                android:id="@+id/add_sample_note_english_korean"
+                android:title="영어단어장(4000제)" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="101"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+</menu>

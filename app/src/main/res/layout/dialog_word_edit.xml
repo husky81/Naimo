@@ -1,0 +1,173 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_word_Layout"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="8dp"
+    tools:layout_editor_absoluteY="81dp">
+
+    <EditText
+        android:id="@+id/edittextItemName"
+        style="@style/Widget.AppCompat.AutoCompleteTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:singleLine="true"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/btnSpeaker"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <EditText
+        android:id="@+id/edittextItemMemo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:maxHeight="60dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+    <EditText
+        android:id="@+id/edittextItemMemo2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:maxHeight="90dp"
+        android:textColor="#7c7c7c"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+    <Button
+        android:id="@+id/buttonSubmit_word"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@android:string/ok"
+        app:layout_constraintEnd_toStartOf="@+id/buttonDelete_word"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edittextItemMemo2" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="pronunciation"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edittextItemName" />
+
+    <ImageButton
+        android:id="@+id/itemimageIcon"
+        android:layout_width="110dp"
+        android:layout_height="0dp"
+        android:backgroundTint="@android:color/background_light"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/edittextItemMemo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/plus3" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="name"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="text"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edittextItem_Pronunciation" />
+
+    <ImageButton
+        android:id="@+id/buttonDelete_word"
+        android:layout_width="80dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonSubmit_word"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edittextItemMemo2"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="-140dp" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="memo"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edittextItemMemo" />
+
+    <ImageButton
+        android:id="@+id/getDaumPronunciation"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ic_search_black_24dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toStartOf="@+id/itemimageIcon"
+        app:layout_constraintTop_toTopOf="@+id/edittextItem_Pronunciation" />
+
+    <WebView
+        android:id="@+id/webViewPronunciation"
+        android:layout_width="0dp"
+        android:layout_height="213dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSubmit_word" >
+
+    </WebView>
+
+    <EditText
+        android:id="@+id/edittextItem_Pronunciation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/getDaumPronunciation"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+    <ImageButton
+        android:id="@+id/btnSpeaker"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/speaker"
+        app:layout_constraintEnd_toStartOf="@+id/itemimageIcon"
+        app:layout_constraintTop_toTopOf="@+id/edittextItemName" />
+
+</android.support.constraint.ConstraintLayout>
+

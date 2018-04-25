@@ -1,0 +1,59 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:layout_editor_absoluteY="81dp">
+
+    <TextView
+        android:id="@+id/booktext_arraySize"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginEnd="8dp"
+        android:text="4x6"
+        android:textSize="14sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/memoText"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/notepad" />
+
+
+    <TextView
+        android:id="@+id/bookName"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="TextView"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/numItem"
+        app:layout_constraintStart_toEndOf="@+id/icon" />
+
+    <TextView
+        android:id="@+id/memoText"
+        android:layout_width="234dp"
+        android:layout_height="25dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/bookName"
+        app:layout_constraintTop_toBottomOf="@+id/bookName" />
+
+    <TextView
+        android:id="@+id/numItem"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/count"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

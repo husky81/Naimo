@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "1013373505952",
+    "firebase_url": "https://maimoadproject.firebaseio.com",
+    "project_id": "maimoadproject",
+    "storage_bucket": "maimoadproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1013373505952:android:b4a74df7a33a85e1",
+        "android_client_info": {
+          "package_name": "com.real.bckim.naimo2000"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1013373505952-shj6ur6tt5afqve1kliuf9l8voi6n172.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.real.bckim.naimo2000",
+            "certificate_hash": "fa4a6fda4f150b356e19aa9cf36ab085054b1cd4"
+          }
+        },
+        {
+          "client_id": "1013373505952-mle54t5luf1idhaskmjejijnf2ci9524.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.real.bckim.naimo2000",
+            "certificate_hash": "277664561750cdaa7269c885e124b3278e417364"
+          }
+        },
+        {
+          "client_id": "1013373505952-tgrcujtcpb9earhrr7oqrdk2av112qi2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfLarDIThujK-GievmCLDFsmSYBrEeIiQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1013373505952-tgrcujtcpb9earhrr7oqrdk2av112qi2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

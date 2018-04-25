@@ -1,0 +1,86 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.real.bckim.naimo2000.WordListActivity">
+    <item android:title="정렬하기">
+        <menu>
+            <item
+                android:id="@+id/memu_Sort_FI"
+                android:title="친화도" />
+            <item
+                android:id="@+id/memu_Sort_Name"
+                android:title="단어" />
+            <item
+                android:id="@+id/memu_Sort_Text"
+                android:title="주요 뜻" />
+            <item
+                android:id="@+id/memu_Sort_Date_Modify"
+                android:title="수정된 일시" />
+            <item
+                android:id="@+id/memu_Sort_Date_Expose"
+                android:title="게임에 나온 일시" />
+            <item
+                android:id="@+id/memu_Sort_Date_Generate"
+                android:title="생성된 일시" />
+            <item
+                android:id="@+id/memu_word_sort_ID"
+                android:title="ID" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="@string/search_title"
+        android:visible="true"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="always"></item>
+    <item
+        android:enabled="true"
+        android:icon="@drawable/icon_im"
+        android:orderInCategory="103"
+        android:title="불러오기"
+        android:visible="true">
+        android:id="@+id/empty"
+        android:title="@string/options"
+        android:orderInCategory="101"
+        app:showAsAction="always"
+        android:icon="@drawable/icon_im"
+        <menu>
+            <item
+                android:id="@+id/action_import_words_from_contacts"
+                android:icon="@drawable/plus_note"
+                android:title="연락처에서 가져오기" />
+            <item
+                android:id="@+id/action_import_words_from_xlsfile"
+                android:title="DAUM단어장 XLS파일" />
+            <item
+                android:id="@+id/action_import_words_from_zipfile"
+                android:enabled="true"
+                android:title="Naimo ZIP파일"
+                android:visible="true"
+                app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/action_import_picture_folder"
+                android:enabled="true"
+                android:title="Picture Folder"
+                android:visible="true"
+                app:showAsAction="ifRoom" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/action_delete_words"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:orderInCategory="102"
+        android:title="@string/deleteWords"
+        android:visible="true"></item>
+    <item
+        android:id="@+id/quizArraySize"
+        android:orderInCategory="101"
+        android:title="@string/sizeofQuizArray"></item>
+    <item
+        android:id="@+id/menu_Export_ZIP"
+        android:icon="@drawable/icon_ex"
+        android:orderInCategory="104"
+        android:title="@string/exportWordZIP"
+        android:visible="true" />
+</menu>
