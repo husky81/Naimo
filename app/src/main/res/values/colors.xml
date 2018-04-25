@@ -6,7 +6,6 @@
     <color name="pairGameText">#FF000000</color>
     <color name="pairGameButton1">#66FFFFFF</color>
     <color name="pairGameButton2">#55CCCCCC</color>
-    <string name="delete">Delete</string>
     <string name="confirmDeletion">Delete Confirm</string>
     <string name="loading">loading...</string>
     <color name="listTextGrey">#FF999999</color>

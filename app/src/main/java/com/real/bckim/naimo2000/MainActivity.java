@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static final int RLT_CODE_NUM_ITEM=299;
     static final int REQ_CODE_DOWNLOAD_DAUM_OPEN_WORD_NOTE=300;
     static final int RLT_CODE_DOWNLOAD_DAUM_OPEN_WORD_NOTE=301;
-    final int REQ_ADD_SAMPLE_NOTE_PRESIDENTS = 302;
+    static final int REQ_CODE_IMPORT_CONTACT_PICTURES=302;
+    static final int REQ_ADD_SAMPLE_NOTE_PRESIDENTS=303;
 
     AlertDialog dialog_book_edit;
     Bitmap image_bitmap; //메모리 절약을 위해 비트맵은 Activity마다 한개만 쓰면 좋을 듯.
@@ -87,43 +88,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         final FloatingActionButton fab_plus_menu = findViewById(R.id.fab_plus_menu);
-        final FloatingActionButton fab_plus_EmptyNote = findViewById(R.id.fab_plus_EmptyNote);
-        final FloatingActionButton fab_plus_SampleNote = findViewById(R.id.fab_plus_SampleNote);
-        final FloatingActionButton fab_plus_PictureFoler = findViewById(R.id.fab_plus_PictureFolder);
-        fab_plus_EmptyNote.setVisibility(View.INVISIBLE);
-        fab_plus_SampleNote.setVisibility(View.INVISIBLE);
-        fab_plus_PictureFoler.setVisibility(View.INVISIBLE);
-
         fab_plus_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                if(fab_plus_EmptyNote.getVisibility()==View.VISIBLE){
-                    setFabPlusOpen(false);
-                }else{
-                    setFabPlusOpen(true);
-                }
-            }
-        });
-        fab_plus_EmptyNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setFabPlusOpen(false);
-                AddBook();
-            }
-        });
-        fab_plus_SampleNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setFabPlusOpen(false);
-                AddSampleBook_PresidentsKOR();
-            }
-        });
-        fab_plus_PictureFoler.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setFabPlusOpen(false);
-                DownloadDAUM_openWordBook();
+                AddBook("새 노트","");
+                ReadDataBase();
+                DisplayList();
             }
         });
 
@@ -145,30 +115,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -182,11 +128,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return;
             }
         }
-    }
-    private void permissionSetting_old() {
-        Manager_Permission myPermission = new Manager_Permission();
-        myPermission.requestReadExternalStoragePermission(this, this);
-        myPermission.requestWriteExternalStoragePermission(this, this);
     }
     private void adSetting() {
         mAdView = findViewById(R.id.adView);
@@ -229,30 +170,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             intent.putExtra("QuizArraySize_Col",cb.getQuizSizeCol());
             startActivityForResult(intent,REQ_CODE_NUM_ITEM);
         }
-    }
-    private void DeleteYN_Old(int id) {
-        SelectedItem = id;
-        Content_Book cn = db_book.getContent(id);
-        String BookName = cn.getText1();
-        AlertDialog.Builder builderDelete = new AlertDialog.Builder(this);     // 여기서 this는 Activity의 this
-        builderDelete.setTitle(R.string.confirmDeletion)        // 제목 설정
-                .setMessage(getString(R.string.preDeleteConfirmMessage) + BookName + getString(R.string.postDeleteConfirmMessage))        // 메세지 설정
-                .setCancelable(true)        // 뒤로 버튼 클릭시 취소 가능 설정
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                    // 확인 버튼 클릭시 설정
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        //finish();
-                        DeleteBook(SelectedItem);
-                    }
-                })
-                .setNegativeButton(R.string.cancle, new DialogInterface.OnClickListener() {
-                    // 취소 버튼 클릭시 설정
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog dialogDelete = builderDelete.create();    // 알림창 객체 생성
-        dialogDelete.show();    // 알림창 띄우기
     }
     private void DeleteYN(int id) {
         SelectedItem = id;
@@ -494,9 +411,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(MainActivity.this, GetDaumPublicWordNoteActivity.class);
         startActivityForResult(intent,REQ_CODE_DOWNLOAD_DAUM_OPEN_WORD_NOTE);
     }
+    private void AddBookFromContactPictures(){
+        long bookID = AddBook("사람이름 외우기"," ");
+        Content_Book cb = db_book.getContent(bookID);
+
+        Intent intent = new Intent(MainActivity.this, WordListActivity.class);
+        intent.putExtra("bookName", cb.getText1());
+        intent.putExtra("bookID", cb.getID());
+        intent.putExtra("QuizArraySize_Row",cb.getQuizSizeRow());
+        intent.putExtra("QuizArraySize_Col",cb.getQuizSizeCol());
+        intent.putExtra("importContactPictures", "true");
+        startActivityForResult(intent,REQ_CODE_NUM_ITEM);
+    }
+    private void AddBookFromPictureFolders(){
+        long bookID = AddBook("그림 외우기"," ");
+        Content_Book cb = db_book.getContent(bookID);
+
+        Intent intent = new Intent(MainActivity.this, WordListActivity.class);
+        intent.putExtra("bookName", cb.getText1());
+        intent.putExtra("bookID", cb.getID());
+        intent.putExtra("QuizArraySize_Row",cb.getQuizSizeRow());
+        intent.putExtra("QuizArraySize_Col",cb.getQuizSizeCol());
+        intent.putExtra("importPictureFolder", "true");
+        startActivityForResult(intent,REQ_CODE_NUM_ITEM);
+    }
     public void AddBookFromZipFile(String bookName, String zipFilePathName){
-        AddBook(bookName," ");
-        int bookID = Manager_TxtMathTools.safeLongToInt(db_book.lastInsertedContentID);
+        long bookID = AddBook(bookName," ");
         Content_Book cb = db_book.getContent(bookID);
 
         Intent intent = new Intent(MainActivity.this, WordListActivity.class);
@@ -508,8 +448,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivityForResult(intent,REQ_CODE_NUM_ITEM);
     }
     public void AddBookFromXlsFile(String bookName, String xlsFilePathName){
-        AddBook(bookName," ");
-        int bookID = Manager_TxtMathTools.safeLongToInt(db_book.lastInsertedContentID);
+        long bookID = AddBook(bookName," ");
         Content_Book cb = db_book.getContent(bookID);
 
         Intent intent = new Intent(MainActivity.this, WordListActivity.class);
@@ -521,35 +460,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         intent.putExtra("importXlsFile", xlsFilePathName);
         startActivityForResult(intent,REQ_CODE_NUM_ITEM);
     }
-    private void AddBook(String text1, String text2){
-        if(text1.length() != 0) db_book.addContent(new Content_Book(text1, text2));
-    }
-    private void setFabPlusOpen(Boolean isOpen){
-        final FloatingActionButton fab_plus_menu = findViewById(R.id.fab_plus_menu);
-        final FloatingActionButton fab_plus_EmptyNote = findViewById(R.id.fab_plus_EmptyNote);
-        final FloatingActionButton fab_plus_SampleNote = findViewById(R.id.fab_plus_SampleNote);
-        final FloatingActionButton fab_plus_PictureFoler = findViewById(R.id.fab_plus_PictureFolder);
-        if(isOpen){
-            //fab_plus_menu.setVisibility(View.INVISIBLE);
-            fab_plus_menu.setMaxWidth(20);
-            fab_plus_menu.setMaxHeight(20);
-            fab_plus_EmptyNote.setVisibility(View.VISIBLE);
-            fab_plus_SampleNote.setVisibility(View.VISIBLE);
-            fab_plus_PictureFoler.setVisibility(View.VISIBLE);
+    private long AddBook(String text1, String text2){
+        if(text1.length() != 0){
+            return db_book.addContent(new Content_Book(text1, text2));
         }else{
-            //fab_plus_menu.setVisibility(View.VISIBLE);
-            fab_plus_menu.setMaxWidth(80);
-            fab_plus_menu.setMaxHeight(80);
-            fab_plus_EmptyNote.setVisibility(View.INVISIBLE);
-            fab_plus_SampleNote.setVisibility(View.INVISIBLE);
-            fab_plus_PictureFoler.setVisibility(View.INVISIBLE);
+            return -1;
         }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //Toast.makeText(getBaseContext(), "resultCode : " + resultCode, Toast.LENGTH_SHORT).show();
-        setFabPlusOpen(false);
-
         if(requestCode==REQ_CODE_DOWNLOAD_DAUM_OPEN_WORD_NOTE){
             if(resultCode==RLT_CODE_DOWNLOAD_DAUM_OPEN_WORD_NOTE){
                 String DaumWordXlsFilePathName = data.getStringExtra("DownloadFile");
@@ -629,12 +549,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            //Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-            //startActivity(intent);
-            Toast.makeText(this, R.string.coming_soon,Toast.LENGTH_SHORT).show();
-            return true;
-        }
         if (id == R.id.add_sample_note_presidents) {
             AddSampleBook_Presidents();
             return true;
@@ -656,5 +570,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_importDaumDictionary) {
+            DownloadDAUM_openWordBook();
+        } else if (id == R.id.nav_importContactPictures) {
+            AddBookFromContactPictures();
+        } else if (id == R.id.nav_importPictureFolder) {
+            AddBookFromPictureFolders();
+        } else if (id == R.id.nav_review) {
+            openPlayStoreReviewPage();
+        } else if (id == R.id.nav_privacyPolicy) {
+            openPersonalInformationPage();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+    private void openPlayStoreReviewPage(){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.real.bckim.naimo2000"));
+        startActivity(browserIntent);
+    }
+    private void openPersonalInformationPage(){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://blog.naver.com/husky81/221260969030"));
+        startActivity(browserIntent);
     }
 }

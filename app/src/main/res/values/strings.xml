@@ -23,7 +23,7 @@
     <string name="preDeleteConfirmMessage">Delete this Note \"</string>
     <string name="postDeleteConfirmMessage">\" ?</string>
     <string name="add">Add</string>
-    <string name="New_Book">New_Book</string>
+    <string name="New_Book">새 노트</string>
     <string name="ok">OK</string>
     <string name="noWordMessage">실행 가능한 단어가 없습니다. 단어를 추가한 후 실행하세요.</string>
     <string name="noSelection">Selection empty.</string>
@@ -39,5 +39,8 @@
     <string name="title_activity_word_list">WordListActivity</string>
 
     <string name="title_activity_get_daum_public_word_note">DAUM 공개단어장 불러오기</string>
+    <string name="privacyPolicy">개인정보처리방침</string>
+    <string name="review">어플 리뷰</string>
+    <string name="delete">삭제</string>
 
 </resources>

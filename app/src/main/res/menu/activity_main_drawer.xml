@@ -3,35 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="none">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/nav_importDaumDictionary"
+            android:icon="@drawable/daum_dictionary01"
+            android:title="Daum 단어장 불러오기" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:id="@+id/nav_importContactPictures"
+            android:icon="@drawable/contact_list03"
+            android:title="연락처 단어장 만들기" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_importPictureFolder"
+            android:icon="@drawable/picture_folder02"
+            android:title="그림 단어장 만들기" />
     </group>
 
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_review"
+                android:icon="@drawable/review"
+                android:title="@string/review" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_privacyPolicy"
+                android:icon="@drawable/privay_policy"
+                android:title="@string/privacyPolicy" />
         </menu>
     </item>
 

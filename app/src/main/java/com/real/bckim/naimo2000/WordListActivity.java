@@ -97,7 +97,7 @@ public class WordListActivity extends AppCompatActivity {
     String selectedImagePathName;
     static Bitmap image_bitmap; //메모리 절약을 위해 비트맵은 Activity마다 한개만 쓰면 좋을 듯.
     final static int EmptyImageIconResource= R.drawable.raindrop3; //노트 기본아이콘.
-    int REQUEST_CODE_PictureFolderByUser = 102;
+    int REQUEST_CODE_IMPORT_PICTURE_FOLDER = 102;
     int REQ_CODE_FAMILIARITY = 103;
     final int REQ_ADD_CONTACT_PICTURES = 104;
 
@@ -154,14 +154,23 @@ public class WordListActivity extends AppCompatActivity {
             }
         }
 
+        String iCP = intent.getStringExtra("importContactPictures");
+        if(iCP!=null && iCP.equals("true")){
+            getContactPermissionAndImportContactPictures();
+        }
+
+        String iPF = intent.getStringExtra("importPictureFolder");
+        if(iPF!=null && iPF.equals("true")){
+            Toast.makeText(this,"그림파일이 있는 폴더를 선택하세요.",Toast.LENGTH_LONG).show();
+            getPicturesFolderByUser();
+        }
+
         ReadWordDataBase();
         customAdapter_word = new CustomAdapter_Word(this,contents);
         DisplayList();
 
         ListViewClickEventSetting();
         ActivityResultsPreperation();
-
-
     }
     private void ActivityResultsPreperation(){
         Intent data = new Intent();
@@ -761,7 +770,6 @@ public class WordListActivity extends AppCompatActivity {
             }
         }
     }
-
     public InputStream openPhoto(long contactId) { //Retrieving the thumbnail-sized photo;
         Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
         Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
@@ -797,7 +805,7 @@ public class WordListActivity extends AppCompatActivity {
         String initialPath = Environment.getExternalStorageDirectory().toString()+"/";
         Intent intent = new Intent(this, FolderSelectionActivity.class);
         intent.putExtra("InitialFolder",initialPath);
-        startActivityForResult(intent, REQUEST_CODE_PictureFolderByUser);
+        startActivityForResult(intent, REQUEST_CODE_IMPORT_PICTURE_FOLDER);
     }
     private void showListSelectCheckBox(){
         //ListView wordList = findViewById(R.id.wordList);
@@ -939,7 +947,7 @@ public class WordListActivity extends AppCompatActivity {
                 wordEditingDialog.showDialog();
             }
         }
-        if(requestCode == REQUEST_CODE_PictureFolderByUser){
+        if(requestCode == REQUEST_CODE_IMPORT_PICTURE_FOLDER){
             if(resultCode==12) {
                 String PictureFolderPath = intent.getStringExtra("selectedFolder");
                 //ImportPicturesFromFolder(PictureFolderPath);
@@ -1062,100 +1070,10 @@ public class WordListActivity extends AppCompatActivity {
         FloatingActionButton fab_play = findViewById(R.id.fab_play);
         fab_play.setVisibility(View.VISIBLE);
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_delete_words) {
-            showListSelectCheckBox();
-            return true;
-        }
-        if (id == R.id.menu_Export_ZIP) {
-            if(numWord<1){
-                Toast.makeText(getApplicationContext(), R.string.noWordMessage,Toast.LENGTH_LONG).show();
-                return false;
-            }
-            //ExportNoteToZipFile(Word_DB_Name);
-            new ExportWordsToZipFile(WordListActivity.this).execute();
-            return true;
-        }
-        if (id == R.id.action_import_picture_folder) {
-            Toast.makeText(this,"그림파일이 있는 폴더를 선택하세요.",Toast.LENGTH_LONG).show();
-            getPicturesFolderByUser();
-            return true;
-        }
-        if (id == R.id.search) {
-            Toast.makeText(this,"Coming soon.",Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        if (id == R.id.quizArraySize) {
-            setting_quizArraySize();
-            return true;
-        }
-        if (id == R.id.action_import_words_from_zipfile) {
-            Toast.makeText(this,"Naimo ZIP 파일이 있는 폴더를 선택하세요.",Toast.LENGTH_LONG).show();
-
-            getExportedBookDataZipFileByUser();
-            return true;
-        }
-        if (id == R.id.action_import_words_from_xlsfile) {
-            Toast.makeText(this,"DAUM 공개 단어장 XLS 파일이 있는 폴더를 선택하세요.",Toast.LENGTH_LONG).show();
-            getExportedBookDataXlsFileByUser();
-            return true;
-        }
-        if (id == R.id.action_import_words_from_contacts) {
-            Toast.makeText(this,"사진이 있는 연락처 목록을 가져옵니다.",Toast.LENGTH_LONG).show();
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission
-                    .READ_CONTACTS}, REQ_ADD_CONTACT_PICTURES);
-            return true;
-        }
-        if (id == R.id.memu_Sort_FI) {
-            db_word.setSortingColumn(4);
-            ReadWordDataBase();
-            DisplayList();
-            return true;
-        }
-        if (id == R.id.memu_Sort_Name) {
-            db_word.setSortingColumn(1);
-            ReadWordDataBase();
-            DisplayList();
-            return true;
-        }
-        if (id == R.id.memu_Sort_Text) {
-            db_word.setSortingColumn(2);
-            ReadWordDataBase();
-            DisplayList();
-            return true;
-        }
-        if (id == R.id.memu_Sort_Date_Generate) {
-            db_word.setSortingColumn(8);
-            ReadWordDataBase();
-            DisplayList();
-            return true;
-        }
-        if (id == R.id.memu_Sort_Date_Modify) {
-            db_word.setSortingColumn(9);
-            ReadWordDataBase();
-            DisplayList();
-            return true;
-        }
-        if (id == R.id.memu_Sort_Date_Expose) {
-            db_word.setSortingColumn(10);
-            ReadWordDataBase();
-            DisplayList();
-            return true;
-        }
-        if (id == R.id.memu_word_sort_ID) {
-            db_word.setSortingColumn(0);
-            ReadWordDataBase();
-            DisplayList();
-            return true;
-        }
-
-
-        return super.onOptionsItemSelected(item);
+    private void getContactPermissionAndImportContactPictures(){
+        Toast.makeText(this,"사진이 있는 연락처 목록을 가져옵니다.",Toast.LENGTH_LONG).show();
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission
+                .READ_CONTACTS}, REQ_ADD_CONTACT_PICTURES);
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -1170,7 +1088,6 @@ public class WordListActivity extends AppCompatActivity {
             }
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -1424,6 +1341,98 @@ public class WordListActivity extends AppCompatActivity {
             DisplayList();
         }
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_delete_words) {
+            showListSelectCheckBox();
+            return true;
+        }
+        if (id == R.id.menu_Export_ZIP) {
+            if(numWord<1){
+                Toast.makeText(getApplicationContext(), R.string.noWordMessage,Toast.LENGTH_LONG).show();
+                return false;
+            }
+            //ExportNoteToZipFile(Word_DB_Name);
+            new ExportWordsToZipFile(WordListActivity.this).execute();
+            return true;
+        }
+        if (id == R.id.action_import_picture_folder) {
+            Toast.makeText(this,"그림파일이 있는 폴더를 선택하세요.",Toast.LENGTH_LONG).show();
+            getPicturesFolderByUser();
+            return true;
+        }
+        if (id == R.id.search) {
+            Toast.makeText(this,"Coming soon.",Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (id == R.id.quizArraySize) {
+            setting_quizArraySize();
+            return true;
+        }
+        if (id == R.id.action_import_words_from_zipfile) {
+            Toast.makeText(this,"Naimo ZIP 파일이 있는 폴더를 선택하세요.",Toast.LENGTH_LONG).show();
 
+            getExportedBookDataZipFileByUser();
+            return true;
+        }
+        if (id == R.id.action_import_words_from_xlsfile) {
+            Toast.makeText(this,"DAUM 공개 단어장 XLS 파일이 있는 폴더를 선택하세요.",Toast.LENGTH_LONG).show();
+            getExportedBookDataXlsFileByUser();
+            return true;
+        }
+        if (id == R.id.action_import_words_from_contacts) {
+            getContactPermissionAndImportContactPictures();
+            return true;
+        }
+        if (id == R.id.memu_Sort_FI) {
+            db_word.setSortingColumn(4);
+            ReadWordDataBase();
+            DisplayList();
+            return true;
+        }
+        if (id == R.id.memu_Sort_Name) {
+            db_word.setSortingColumn(1);
+            ReadWordDataBase();
+            DisplayList();
+            return true;
+        }
+        if (id == R.id.memu_Sort_Text) {
+            db_word.setSortingColumn(2);
+            ReadWordDataBase();
+            DisplayList();
+            return true;
+        }
+        if (id == R.id.memu_Sort_Date_Generate) {
+            db_word.setSortingColumn(8);
+            ReadWordDataBase();
+            DisplayList();
+            return true;
+        }
+        if (id == R.id.memu_Sort_Date_Modify) {
+            db_word.setSortingColumn(9);
+            ReadWordDataBase();
+            DisplayList();
+            return true;
+        }
+        if (id == R.id.memu_Sort_Date_Expose) {
+            db_word.setSortingColumn(10);
+            ReadWordDataBase();
+            DisplayList();
+            return true;
+        }
+        if (id == R.id.memu_word_sort_ID) {
+            db_word.setSortingColumn(0);
+            ReadWordDataBase();
+            DisplayList();
+            return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
 }
 

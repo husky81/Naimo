@@ -30,8 +30,6 @@ public class ListDataHandler_Book extends SQLiteOpenHelper {
     private static final String COLUMN_QUIZCOL = "Int5";
     private static final String COLUMN_DATETIME = "DateTime";
 
-    public static long lastInsertedContentID;
-
     public ListDataHandler_Book(Context context, String DataBaseName) {
         super(context, DataBaseName, null, DATABASE_VERSION);
         DATABASE_NAME=DataBaseName;
@@ -62,7 +60,7 @@ public class ListDataHandler_Book extends SQLiteOpenHelper {
         // Create tables again
         onCreate(db);
     }
-    public void addContent(Content_Book content) {
+    public long addContent(Content_Book content) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_TEXT1, content.getText1());
@@ -72,14 +70,15 @@ public class ListDataHandler_Book extends SQLiteOpenHelper {
         values.put(COLUMN_QUIZCOL, content.getQuizSizeCol());
         values.put(COLUMN_DATETIME, System.currentTimeMillis());
         // Inserting Row
-        lastInsertedContentID = db.insert(TABLE_NAME, null, values);
+        long id = db.insert(TABLE_NAME, null, values);
         db.close(); // Closing database connection
+        return id;
     }
     private String ModifyEmptyContent(String value){
         if(value.length()==0) {value=" ";}
         return value;
     }
-    public Content_Book getContent(int id) {
+    public Content_Book getContent(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] selectQuery = {COLUMN_ID, COLUMN_TEXT1, COLUMN_TEXT2, COLUMN_NUMITEM, COLUMN_QUIZROW, COLUMN_QUIZCOL, COLUMN_DATETIME};
         String strID = String.valueOf(id);
