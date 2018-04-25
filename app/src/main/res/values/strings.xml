@@ -2,8 +2,9 @@
     <string name="app_name">Naimo</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Naimo: 나만의 단어장</string>
+    <string name="nav_header_title2">(영단어, 사람이름외우기)</string>
+    <string name="nav_header_subtitle">k2@uos.ac.kr</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 

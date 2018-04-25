@@ -1,6 +1,8 @@
 package com.real.bckim.naimo2000;
 
+import android.app.Activity;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -22,7 +24,10 @@ import java.util.zip.ZipOutputStream;
  * Created by bckim on 2018-03-26.
  */
 
-public class Manager_FileAndFolderControl {
+public class Manager_SystemControl {
+    public static void setStatusBarColor(Activity activity){
+        activity.getWindow().setStatusBarColor(ContextCompat.getColor(activity,R.color.colorPrimaryDark));
+    }
     public static boolean FileExistCheck(String PathName){
         File files = new File(PathName);
         return files.exists();

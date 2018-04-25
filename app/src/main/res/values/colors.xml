@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#4F81BD</color>
+    <color name="colorPrimaryDark">#FF335A8A</color>
     <color name="colorAccent">#FF4081</color>
     <color name="pairGameText">#FF000000</color>
     <color name="pairGameButton1">#66FFFFFF</color>
@@ -11,5 +11,6 @@
     <string name="loading">loading...</string>
     <color name="listTextGrey">#FF999999</color>
     <color name="listTextBlack">#FF000000</color>
+
 
 </resources>

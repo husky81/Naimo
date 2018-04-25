@@ -1,6 +1,5 @@
 package com.real.bckim.naimo2000;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -14,7 +13,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,9 +37,7 @@ import com.google.android.gms.ads.AdView;
 import java.io.InputStream;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String Book_DB_Name = "NaimoBookDB_835";
     public static ListDataHandler_Book db_book;
     List<Content_Book> contents;
@@ -86,7 +82,6 @@ public class MainActivity extends AppCompatActivity
                     .WRITE_EXTERNAL_STORAGE}, REQ_ADD_SAMPLE_NOTE_PRESIDENTS);
         }
     }
-
     private void ToolbarFabDrawerNaviewSetting(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -179,7 +174,7 @@ public class MainActivity extends AppCompatActivity
         switch (requestCode) {
             case (REQ_ADD_SAMPLE_NOTE_PRESIDENTS): {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Manager_FileAndFolderControl.makeFolder(NaimoDataExportPath);
+                    Manager_SystemControl.makeFolder(NaimoDataExportPath);
                     AddSampleBook_Presidents();
                 } else {
                     Toast.makeText(this, "단어장을 사용하기 위해서는 외부 저장장치 읽기/쓰기 권한이 필요합니다.", Toast.LENGTH_LONG).show();
@@ -466,7 +461,7 @@ public class MainActivity extends AppCompatActivity
     public void AddSampleBook_Presidents(){
         InputStream databaseInputStream = getResources().openRawResource(R.raw.sample_presidents);
         String pathName = NaimoDataExportPath + "sample_presidents.zip";
-        Manager_FileAndFolderControl.saveFileFromInputStream(databaseInputStream,pathName);
+        Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
 
         String bookName = "Presidents Name(sample)";
         AddBookFromZipFile(bookName,pathName);
@@ -474,7 +469,7 @@ public class MainActivity extends AppCompatActivity
     public void AddSampleBook_NationalFlags(){
         InputStream databaseInputStream = getResources().openRawResource(R.raw.sample_flags);
         String pathName = NaimoDataExportPath + "sample_national_flags.zip";
-        Manager_FileAndFolderControl.saveFileFromInputStream(databaseInputStream,pathName);
+        Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
 
         String bookName = "National Flags(sample)";
         AddBookFromZipFile(bookName,pathName);
@@ -482,7 +477,7 @@ public class MainActivity extends AppCompatActivity
     public void AddSampleBook_PresidentsKOR(){
         InputStream databaseInputStream = getResources().openRawResource(R.raw.sample_president_kor);
         String pathName = NaimoDataExportPath + "sample_presidents_korea.zip";
-        Manager_FileAndFolderControl.saveFileFromInputStream(databaseInputStream,pathName);
+        Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
 
         String bookName = "한국의대통령(sample)";
         AddBookFromZipFile(bookName,pathName);
@@ -490,7 +485,7 @@ public class MainActivity extends AppCompatActivity
     public void AddSampleBook_EnglishKorean(){
         InputStream databaseInputStream = getResources().openRawResource(R.raw.sample_english_word);
         String pathName = NaimoDataExportPath + "sample_english_korean.zip";
-        Manager_FileAndFolderControl.saveFileFromInputStream(databaseInputStream,pathName);
+        Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
 
         String bookName = "영어단어장(4000제)";
         AddBookFromZipFile(bookName,pathName);

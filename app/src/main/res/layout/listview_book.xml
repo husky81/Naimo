@@ -33,6 +33,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="TextView"
+        android:textColor="@color/listTextBlack"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/numItem"

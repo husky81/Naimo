@@ -50,6 +50,7 @@ public class GetDaumPublicWordNoteActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Manager_SystemControl.setStatusBarColor(this);
 
         fabDown = findViewById(R.id.fabDownLoadOpenWordBook);
         fabDown.setBackgroundColor(0xFFFF4400); //클래스가 달라서 그런지 안됨. 서브루틴으로 바꿔볼까?
@@ -81,8 +82,8 @@ public class GetDaumPublicWordNoteActivity extends AppCompatActivity {
                 request.allowScanningByMediaScanner();
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); //Notify client once download is completed!
                 request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,wordBookFileName);
-                downloadFilePathName = Manager_FileAndFolderControl.getDownloadPath() + wordBookFileName;
-                Manager_FileAndFolderControl.deleteFile(downloadFilePathName); //기존에 다운받은 단어장 삭제.
+                downloadFilePathName = Manager_SystemControl.getDownloadPath() + wordBookFileName;
+                Manager_SystemControl.deleteFile(downloadFilePathName); //기존에 다운받은 단어장 삭제.
                 //request.setTitle("GadgetSaint Downloading " + "Sample" + ".png");
                 //request.setDescription("Downloading " + "Sample" + ".png");
                 request.setVisibleInDownloadsUi(true);

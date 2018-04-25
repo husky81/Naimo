@@ -39,7 +39,7 @@ public class Manager_PreviewImage {
         folder.mkdirs();
     }
     public static void deletePreviewImageFolder(){
-        Manager_FileAndFolderControl.deleteFolder(BaseFolderPath);
+        Manager_SystemControl.deleteFolder(BaseFolderPath);
     }
     public static String getPreviewImageFileName(int ID){
         return "prv" + ID + ".png";

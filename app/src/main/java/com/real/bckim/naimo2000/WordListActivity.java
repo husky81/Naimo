@@ -431,11 +431,11 @@ public class WordListActivity extends AppCompatActivity {
     public void ExportNoteToZipFile(String Word_DB_Name){
         ExportNoteToFolder(Word_DB_Name);
         String ExportedPath = MainActivity.NaimoDataExportPath + Word_DB_Name + "/";
-        String[] allFiles = Manager_FileAndFolderControl.getAllFilePathNames(ExportedPath);
-        String downLoadPath = Manager_FileAndFolderControl.getDownloadPath();
+        String[] allFiles = Manager_SystemControl.getAllFilePathNames(ExportedPath);
+        String downLoadPath = Manager_SystemControl.getDownloadPath();
         String zipFileName = downLoadPath+Word_DB_Name + "_" + BookName +".zip";
-        Manager_FileAndFolderControl.makeZipFile(allFiles,zipFileName);
-        Manager_FileAndFolderControl.deleteFolder(ExportedPath);
+        Manager_SystemControl.makeZipFile(allFiles,zipFileName);
+        Manager_SystemControl.deleteFolder(ExportedPath);
         Toast.makeText(this,"Generated Naimo ZIP file : " + zipFileName ,Toast.LENGTH_LONG).show();
     }
     public static void ExportNoteToFolder(String Word_DB_Name){
@@ -447,7 +447,7 @@ public class WordListActivity extends AppCompatActivity {
     }
     private static void ExportBookDataToFolder(String TargetFolder){
         File file = new File(TargetFolder + FileName_NaimoDataList);
-        Manager_FileAndFolderControl.deleteAllFile(TargetFolder);
+        Manager_SystemControl.deleteAllFile(TargetFolder);
 
         FileOutputStream fos = null;
         Writer out = null;
@@ -468,8 +468,8 @@ public class WordListActivity extends AppCompatActivity {
             Content_Word cw = db_word.getContent(IDs[i]);
             String text1 = cw.getText1();
             String text2 = cw.getText2();
-            text1= Manager_FileAndFolderControl.Convert_CSV_String(text1);
-            text2= Manager_FileAndFolderControl.Convert_CSV_String(text2);
+            text1= Manager_SystemControl.Convert_CSV_String(text1);
+            text2= Manager_SystemControl.Convert_CSV_String(text2);
             String strWrite =IDs[i] +","+ text1 +","+ text2 + ",\n";
             try {
                 out.write(strWrite);
@@ -488,7 +488,7 @@ public class WordListActivity extends AppCompatActivity {
     }
     private void ExportBookDataToFolder_old(String TargetFolder){
         File file = new File(TargetFolder + FileName_NaimoDataList);
-        Manager_FileAndFolderControl.deleteAllFile(TargetFolder);
+        Manager_SystemControl.deleteAllFile(TargetFolder);
 
         FileWriter fw = null;
         try {
@@ -528,7 +528,7 @@ public class WordListActivity extends AppCompatActivity {
             String titleText = br.readLine();
             while(((lineString = br.readLine()) != null)){
                 //String[] row = lineString.split(",");
-                String[] row = Manager_FileAndFolderControl.splitCSV(lineString);
+                String[] row = Manager_SystemControl.splitCSV(lineString);
 
                 String text1 = row[1];
                 String text2="";
@@ -565,7 +565,7 @@ public class WordListActivity extends AppCompatActivity {
             String titleText = br.readLine();
             while(((lineString = br.readLine()) != null)){
                 //String[] row = lineString.split(",");
-                String[] row = Manager_FileAndFolderControl.splitCSV(lineString);
+                String[] row = Manager_SystemControl.splitCSV(lineString);
 
                 String text1 = row[1];
                 String text2="";
@@ -616,18 +616,18 @@ public class WordListActivity extends AppCompatActivity {
     private void ImportWordsFromZipFile(String zipFile_ExportedBookData){
         if(zipFile_ExportedBookData==null) return;
         File file = new File(zipFile_ExportedBookData);if(!file.exists()) return;
-        String path = Manager_FileAndFolderControl.getPathFromPathName(zipFile_ExportedBookData);
-        String fnwoext = Manager_FileAndFolderControl.getFileNameWithoutExtensionFromPathName(zipFile_ExportedBookData);
-        String fn = Manager_FileAndFolderControl.getFileName(zipFile_ExportedBookData);
-        Manager_FileAndFolderControl.unpackZipToSubFolder(zipFile_ExportedBookData);
+        String path = Manager_SystemControl.getPathFromPathName(zipFile_ExportedBookData);
+        String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(zipFile_ExportedBookData);
+        String fn = Manager_SystemControl.getFileName(zipFile_ExportedBookData);
+        Manager_SystemControl.unpackZipToSubFolder(zipFile_ExportedBookData);
         ImportWordsFromFolder(path + fnwoext +"/");
-        Manager_FileAndFolderControl.deleteFolder(path + fnwoext +"/");
+        Manager_SystemControl.deleteFolder(path + fnwoext +"/");
     }
     private void ImportPicturesFromFolder_old(String pictureFolderPath){
-        String[] fns = Manager_FileAndFolderControl.getAllFilePathNames(pictureFolderPath);
+        String[] fns = Manager_SystemControl.getAllFilePathNames(pictureFolderPath);
         for(String fn : fns){
-            String ext = Manager_FileAndFolderControl.getExtension(fn).toLowerCase();
-            String fnwoext = Manager_FileAndFolderControl.getFileNameWithoutExtensionFromPathName(fn);
+            String ext = Manager_SystemControl.getExtension(fn).toLowerCase();
+            String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(fn);
             if(ext.equals("png") || ext.equals("jpg")){
                 AddWord(fn,fnwoext," ");
             }
@@ -904,7 +904,7 @@ public class WordListActivity extends AppCompatActivity {
         InputStream databaseInputStream = getResources().openRawResource(R.raw.wordbook);
         File mPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         String pathName = mPath.getPath() + "/" + "sample_wordbook_daum.xls";
-        Manager_FileAndFolderControl.saveFileFromInputStream(databaseInputStream,pathName);
+        Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
 
         final Manager_FileDialog managerFileDialog = new Manager_FileDialog(this, mPath, ".xls");
         managerFileDialog.addFileListener(new Manager_FileDialog.FileSelectedListener() {
@@ -956,6 +956,8 @@ public class WordListActivity extends AppCompatActivity {
         }
     }
     private void ToolbarFloatingButtonSetting(){
+        Manager_SystemControl.setStatusBarColor(this);
+
         Toolbar toolbar = findViewById(R.id.toolbar_word);
         setSupportActionBar(toolbar);
 
@@ -1295,7 +1297,7 @@ public class WordListActivity extends AppCompatActivity {
         protected Void doInBackground(Void... args) {
             ImportWordsFromZipFile(importZipFile);
             zip_xls_ImportComplete =true;
-            Manager_FileAndFolderControl.deleteFile(importZipFile);
+            Manager_SystemControl.deleteFile(importZipFile);
             return null;
         }
 
@@ -1327,12 +1329,12 @@ public class WordListActivity extends AppCompatActivity {
         protected Void doInBackground(Void... args) {
             if(zipFile_ExportedBookData==null) finish();
             File file = new File(zipFile_ExportedBookData);if(!file.exists()) finish();
-            String path = Manager_FileAndFolderControl.getPathFromPathName(zipFile_ExportedBookData);
-            String fnwoext = Manager_FileAndFolderControl.getFileNameWithoutExtensionFromPathName(zipFile_ExportedBookData);
-            String fn = Manager_FileAndFolderControl.getFileName(zipFile_ExportedBookData);
-            Manager_FileAndFolderControl.unpackZipToSubFolder(zipFile_ExportedBookData);
+            String path = Manager_SystemControl.getPathFromPathName(zipFile_ExportedBookData);
+            String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(zipFile_ExportedBookData);
+            String fn = Manager_SystemControl.getFileName(zipFile_ExportedBookData);
+            Manager_SystemControl.unpackZipToSubFolder(zipFile_ExportedBookData);
             ImportWordsFromFolder(path + fnwoext +"/");
-            Manager_FileAndFolderControl.deleteFolder(path + fnwoext +"/");
+            Manager_SystemControl.deleteFolder(path + fnwoext +"/");
             return null;
         }
 
@@ -1363,11 +1365,11 @@ public class WordListActivity extends AppCompatActivity {
         protected Void doInBackground(Void... args) {
             ExportNoteToFolder(Word_DB_Name);
             String ExportedPath = MainActivity.NaimoDataExportPath + Word_DB_Name + "/";
-            String[] allFiles = Manager_FileAndFolderControl.getAllFilePathNames(ExportedPath);
-            String downLoadPath = Manager_FileAndFolderControl.getDownloadPath();
+            String[] allFiles = Manager_SystemControl.getAllFilePathNames(ExportedPath);
+            String downLoadPath = Manager_SystemControl.getDownloadPath();
             String zipFileName = downLoadPath+Word_DB_Name + "_" + BookName +".zip";
-            Manager_FileAndFolderControl.makeZipFile(allFiles,zipFileName);
-            Manager_FileAndFolderControl.deleteFolder(ExportedPath);
+            Manager_SystemControl.makeZipFile(allFiles,zipFileName);
+            Manager_SystemControl.deleteFolder(ExportedPath);
             return null;
         }
 
@@ -1396,10 +1398,10 @@ public class WordListActivity extends AppCompatActivity {
         }
 
         protected Void doInBackground(Void... args) {
-            String[] fns = Manager_FileAndFolderControl.getAllFilePathNames(pictureFolderPath);
+            String[] fns = Manager_SystemControl.getAllFilePathNames(pictureFolderPath);
             for(String fn : fns){
-                String ext = Manager_FileAndFolderControl.getExtension(fn).toLowerCase();
-                String fnwoext = Manager_FileAndFolderControl.getFileNameWithoutExtensionFromPathName(fn);
+                String ext = Manager_SystemControl.getExtension(fn).toLowerCase();
+                String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(fn);
                 if(ext.equals("png") || ext.equals("jpg")){
                     //AddWord(fn,fnwoext," ");
                     if(fnwoext.length() != 0){

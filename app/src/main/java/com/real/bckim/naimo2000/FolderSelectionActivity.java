@@ -38,6 +38,8 @@ public class FolderSelectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_folder_selection);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Manager_SystemControl.setStatusBarColor(this);
+
 
         //if(Build.VERSION.SDK_INT>=21) getWindow().setStatusBarColor(Color.BLACK); //생태표시줄 색상설정: 이걸 안하면 하얗게 됨.
 
