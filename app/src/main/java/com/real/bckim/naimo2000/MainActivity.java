@@ -91,46 +91,46 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        final FloatingActionButton fab_plus_menu = findViewById(R.id.fab_plus_menu);
-//        final FloatingActionButton fab_plus_EmptyNote = findViewById(R.id.fab_plus_EmptyNote);
-//        final FloatingActionButton fab_plus_SampleNote = findViewById(R.id.fab_plus_SampleNote);
-//        final FloatingActionButton fab_plus_PictureFoler = findViewById(R.id.fab_plus_PictureFolder);
-//        fab_plus_EmptyNote.setVisibility(View.INVISIBLE);
-//        fab_plus_SampleNote.setVisibility(View.INVISIBLE);
-//        fab_plus_PictureFoler.setVisibility(View.INVISIBLE);
-//
-//        fab_plus_menu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-//                if(fab_plus_EmptyNote.getVisibility()==View.VISIBLE){
-//                    setFabPlusOpen(false);
-//                }else{
-//                    setFabPlusOpen(true);
-//                }
-//            }
-//        });
-//        fab_plus_EmptyNote.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                setFabPlusOpen(false);
-//                AddBook();
-//            }
-//        });
-//        fab_plus_SampleNote.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                setFabPlusOpen(false);
-//                AddSampleBook_PresidentsKOR();
-//            }
-//        });
-//        fab_plus_PictureFoler.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                setFabPlusOpen(false);
-//                DownloadDAUM_openWordBook();
-//            }
-//        });
+        final FloatingActionButton fab_plus_menu = findViewById(R.id.fab_plus_menu);
+        final FloatingActionButton fab_plus_EmptyNote = findViewById(R.id.fab_plus_EmptyNote);
+        final FloatingActionButton fab_plus_SampleNote = findViewById(R.id.fab_plus_SampleNote);
+        final FloatingActionButton fab_plus_PictureFoler = findViewById(R.id.fab_plus_PictureFolder);
+        fab_plus_EmptyNote.setVisibility(View.INVISIBLE);
+        fab_plus_SampleNote.setVisibility(View.INVISIBLE);
+        fab_plus_PictureFoler.setVisibility(View.INVISIBLE);
+
+        fab_plus_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                if(fab_plus_EmptyNote.getVisibility()==View.VISIBLE){
+                    setFabPlusOpen(false);
+                }else{
+                    setFabPlusOpen(true);
+                }
+            }
+        });
+        fab_plus_EmptyNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setFabPlusOpen(false);
+                AddBook();
+            }
+        });
+        fab_plus_SampleNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setFabPlusOpen(false);
+                AddSampleBook_PresidentsKOR();
+            }
+        });
+        fab_plus_PictureFoler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setFabPlusOpen(false);
+                DownloadDAUM_openWordBook();
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -530,25 +530,25 @@ public class MainActivity extends AppCompatActivity
         if(text1.length() != 0) db_book.addContent(new Content_Book(text1, text2));
     }
     private void setFabPlusOpen(Boolean isOpen){
-//        final FloatingActionButton fab_plus_menu = findViewById(R.id.fab_plus_menu);
-//        final FloatingActionButton fab_plus_EmptyNote = findViewById(R.id.fab_plus_EmptyNote);
-//        final FloatingActionButton fab_plus_SampleNote = findViewById(R.id.fab_plus_SampleNote);
-//        final FloatingActionButton fab_plus_PictureFoler = findViewById(R.id.fab_plus_PictureFolder);
-//        if(isOpen){
-//            //fab_plus_menu.setVisibility(View.INVISIBLE);
-//            fab_plus_menu.setMaxWidth(20);
-//            fab_plus_menu.setMaxHeight(20);
-//            fab_plus_EmptyNote.setVisibility(View.VISIBLE);
-//            fab_plus_SampleNote.setVisibility(View.VISIBLE);
-//            fab_plus_PictureFoler.setVisibility(View.VISIBLE);
-//        }else{
-//            //fab_plus_menu.setVisibility(View.VISIBLE);
-//            fab_plus_menu.setMaxWidth(80);
-//            fab_plus_menu.setMaxHeight(80);
-//            fab_plus_EmptyNote.setVisibility(View.INVISIBLE);
-//            fab_plus_SampleNote.setVisibility(View.INVISIBLE);
-//            fab_plus_PictureFoler.setVisibility(View.INVISIBLE);
-//        }
+        final FloatingActionButton fab_plus_menu = findViewById(R.id.fab_plus_menu);
+        final FloatingActionButton fab_plus_EmptyNote = findViewById(R.id.fab_plus_EmptyNote);
+        final FloatingActionButton fab_plus_SampleNote = findViewById(R.id.fab_plus_SampleNote);
+        final FloatingActionButton fab_plus_PictureFoler = findViewById(R.id.fab_plus_PictureFolder);
+        if(isOpen){
+            //fab_plus_menu.setVisibility(View.INVISIBLE);
+            fab_plus_menu.setMaxWidth(20);
+            fab_plus_menu.setMaxHeight(20);
+            fab_plus_EmptyNote.setVisibility(View.VISIBLE);
+            fab_plus_SampleNote.setVisibility(View.VISIBLE);
+            fab_plus_PictureFoler.setVisibility(View.VISIBLE);
+        }else{
+            //fab_plus_menu.setVisibility(View.VISIBLE);
+            fab_plus_menu.setMaxWidth(80);
+            fab_plus_menu.setMaxHeight(80);
+            fab_plus_EmptyNote.setVisibility(View.INVISIBLE);
+            fab_plus_SampleNote.setVisibility(View.INVISIBLE);
+            fab_plus_PictureFoler.setVisibility(View.INVISIBLE);
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

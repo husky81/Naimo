@@ -9,6 +9,15 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        ads:layout_constraintBottom_toTopOf="@+id/adView"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="wrap_content"
@@ -19,14 +28,5 @@
         ads:adUnitId="@string/banner_ad_unit_id"
         ads:layout_constraintBottom_toBottomOf="parent"
         ads:layout_constraintStart_toStartOf="parent"></com.google.android.gms.ads.AdView>
-
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="368dp"
-        android:layout_height="445dp"
-        ads:layout_constraintBottom_toTopOf="@+id/adView"
-        ads:layout_constraintEnd_toEndOf="parent"
-        ads:layout_constraintStart_toStartOf="parent"
-        ads:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
