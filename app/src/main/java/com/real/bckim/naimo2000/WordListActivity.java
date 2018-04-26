@@ -479,11 +479,13 @@ public class WordListActivity extends AppCompatActivity {
             String text2 = cw.getText2();
             String text3 = cw.getText3();
             String text4 = cw.getText4();
+            if(text3==null) text3="";
+            if(text4==null) text4="";
             text1= Manager_SystemControl.Convert_CSV_String(text1);
             text2= Manager_SystemControl.Convert_CSV_String(text2);
             text3= Manager_SystemControl.Convert_CSV_String(text3);
             text4= Manager_SystemControl.Convert_CSV_String(text4);
-            String strWrite =IDs[i] +","+ text1 +","+ text2 + text3 + text4 + ",\n";
+            String strWrite =IDs[i] +","+ text1 +","+ text2  +","+ text3  +","+ text4 + ",\n";
             try {
                 out.write(strWrite);
             } catch (Exception e) {
@@ -543,14 +545,14 @@ public class WordListActivity extends AppCompatActivity {
                 //String[] row = lineString.split(",");
                 String[] row = Manager_SystemControl.splitCSV(lineString);
 
-                String text1 = row[1];
-                String text2="";
-                if(row.length>2){
-                    text2 = row[2];
+                String[] texts = new String[5];
+                for(int i=0;i<row.length;i++){
+                    texts[i]=row[i];
                 }
-                String text3=row[3];
-                String text4=row[4];
-                int id = db_word.addContent(new Content_Word(text1, text2, text3, text4));
+                for(int i=row.length;i<5;i++){
+                    texts[i]="";
+                }
+                int id = db_word.addContent(new Content_Word(texts[1],texts[2],texts[3],texts[4]));
 
                 int csvID = Integer.parseInt(row[0]);
                 ImagePathName = ExportedBookDataFolder + Manager_PreviewImage.getPreviewImageFileName(csvID);
