@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     Toast.makeText(this, "기본 단어장을 불러오기 위해서는 외부 저장장치 읽기/쓰기 권한이 필요합니다.", Toast.LENGTH_LONG).show();
                 }
+                return;
             }
         }
     }
@@ -145,6 +146,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             IDs[i] = cn.getID();
             i++;
         }
+    }
+    private void DisplayList() {
+        //customAdapter_book = new CustomAdapter_Book(getApplicationContext(), IDs, names, memos, numItems, contents);
+        CustomAdapter_Book customAdapter_book = new CustomAdapter_Book(getApplicationContext(), contents);
+        //customAdapter_book = new CustomAdapter_Book(getApplicationContext(), contents);
+        ListView bookList = findViewById(R.id.listView);
+        bookList.setAdapter(customAdapter_book);
+        //customAdapter_book.notifyDataSetChanged();
     }
     private void ListViewClickEventSetting(){
         //ListView Click Setting
@@ -170,6 +179,116 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             intent.putExtra("QuizArraySize_Col",cb.getQuizSizeCol());
             startActivityForResult(intent,REQ_CODE_NUM_ITEM);
         }
+    }
+    private void AddBook() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_book_edit, null);
+        builder.setView(view);
+        ImageView icon = view.findViewById(R.id.imageIcon);
+        Button add = view.findViewById(R.id.buttonSubmit);
+        Button cancle = view.findViewById(R.id.buttonDelete);
+        final EditText editText1 = view.findViewById(R.id.edittextBookName);
+        final EditText editText2 = view.findViewById(R.id.edittextBookMemo);
+
+        add.setText(R.string.add);
+        cancle.setText(R.string.cancle);
+        editText1.setText(R.string.New_Book);
+
+        dialog_book_edit = builder.create();
+        icon.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                selectPhoto();
+            }
+        });
+        add.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String text1 = editText1.getText().toString();
+                String text2 = editText2.getText().toString();
+                if (text1.length() != 0) db_book.addContent(new Content_Book(text1, text2));
+                dialog_book_edit.dismiss();
+                ReadDataBase();
+                DisplayList();
+            }
+        });
+        cancle.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dialog_book_edit.dismiss();
+            }
+        });
+        dialog_book_edit.show();
+    }
+    private long AddBook(String text1, String text2){
+        if(text1.length() != 0){
+            return db_book.addContent(new Content_Book(text1, text2));
+        }else{
+            return -1;
+        }
+    }
+    private long AddBook(String text1, String text2,int row, int col){
+        if(text1.length() != 0){
+            return db_book.addContent(new Content_Book(text1, text2, row, col));
+        }else{
+            return -1;
+        }
+    }
+    private void EditBook(int position) {
+        SelectedItem = position;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_book_edit, null);
+        builder.setView(view);
+        ImageView icon = view.findViewById(R.id.imageIcon);
+        Button submit = view.findViewById(R.id.buttonSubmit);
+        ImageButton delete = view.findViewById(R.id.buttonDelete);
+        final EditText editText1 = view.findViewById(R.id.edittextBookName);
+        final EditText editText2 = view.findViewById(R.id.edittextBookMemo);
+
+        Content_Book cn = db_book.getContent(IDs[position]);
+        PIM.setDataBaseName(Book_DB_Name);
+        image_bitmap = PIM.getPreviewImage(IDs[position]);
+        if (image_bitmap == null) {
+            icon.setImageResource(NotePadIconResource);
+        } else {
+            icon.setImageBitmap(image_bitmap);
+        }
+
+        String text1 = cn.getText1();
+        String text2 = cn.getText2();
+
+        editText1.setText(text1);
+        editText2.setText(text2);
+        submit.setText(R.string.ok);
+
+        dialog_book_edit = builder.create();
+        icon.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                selectPhoto();
+            }
+        });
+        submit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Content_Book cn = db_book.getContent(IDs[SelectedItem]);
+                String text1 = editText1.getText().toString();
+                String text2 = editText2.getText().toString();
+                if (text1.length() != 0) {
+                    cn.setText1(text1);
+                    cn.setText2(text2);
+                    db_book.updateContent(cn);
+                }
+                dialog_book_edit.dismiss();
+                ReadDataBase();
+                DisplayList();
+            }
+        });
+        delete.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Content_Book cn = db_book.getContent(IDs[SelectedItem]);
+                DeleteYN(cn.getID());
+                dialog_book_edit.dismiss();
+            }
+        });
+        dialog_book_edit.show();
     }
     private void DeleteYN(int id) {
         SelectedItem = id;
@@ -234,110 +353,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ReadDataBase();
         DisplayList();
     }
-    private void DisplayList() {
-        //customAdapter_book = new CustomAdapter_Book(getApplicationContext(), IDs, names, memos, numItems, contents);
-        CustomAdapter_Book customAdapter_book = new CustomAdapter_Book(getApplicationContext(), contents);
-        //customAdapter_book = new CustomAdapter_Book(getApplicationContext(), contents);
-        ListView bookList = findViewById(R.id.listView);
-        bookList.setAdapter(customAdapter_book);
-        //customAdapter_book.notifyDataSetChanged();
-    }
-    private void AddBook() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_book_edit, null);
-        builder.setView(view);
-        ImageView icon = view.findViewById(R.id.imageIcon);
-        Button add = view.findViewById(R.id.buttonSubmit);
-        Button cancle = view.findViewById(R.id.buttonDelete);
-        final EditText editText1 = view.findViewById(R.id.edittextBookName);
-        final EditText editText2 = view.findViewById(R.id.edittextBookMemo);
-
-        add.setText(R.string.add);
-        cancle.setText(R.string.cancle);
-        editText1.setText(R.string.New_Book);
-
-        dialog_book_edit = builder.create();
-        icon.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                selectPhoto();
-            }
-        });
-        add.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                String text1 = editText1.getText().toString();
-                String text2 = editText2.getText().toString();
-                if (text1.length() != 0) db_book.addContent(new Content_Book(text1, text2));
-                dialog_book_edit.dismiss();
-                ReadDataBase();
-                DisplayList();
-            }
-        });
-        cancle.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                dialog_book_edit.dismiss();
-            }
-        });
-        dialog_book_edit.show();
-    }
-    private void EditBook(int position) {
-        SelectedItem = position;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_book_edit, null);
-        builder.setView(view);
-        ImageView icon = view.findViewById(R.id.imageIcon);
-        Button submit = view.findViewById(R.id.buttonSubmit);
-        ImageButton delete = view.findViewById(R.id.buttonDelete);
-        final EditText editText1 = view.findViewById(R.id.edittextBookName);
-        final EditText editText2 = view.findViewById(R.id.edittextBookMemo);
-
-        Content_Book cn = db_book.getContent(IDs[position]);
-        PIM.setDataBaseName(Book_DB_Name);
-        image_bitmap = PIM.getPreviewImage(IDs[position]);
-        if (image_bitmap == null) {
-            icon.setImageResource(NotePadIconResource);
-        } else {
-            icon.setImageBitmap(image_bitmap);
-        }
-
-        String text1 = cn.getText1();
-        String text2 = cn.getText2();
-
-        editText1.setText(text1);
-        editText2.setText(text2);
-        submit.setText(R.string.ok);
-
-        dialog_book_edit = builder.create();
-        icon.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                selectPhoto();
-            }
-        });
-        submit.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Content_Book cn = db_book.getContent(IDs[SelectedItem]);
-                String text1 = editText1.getText().toString();
-                String text2 = editText2.getText().toString();
-                if (text1.length() != 0) {
-                    cn.setText1(text1);
-                    cn.setText2(text2);
-                    db_book.updateContent(cn);
-                }
-                dialog_book_edit.dismiss();
-                ReadDataBase();
-                DisplayList();
-            }
-        });
-        delete.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Content_Book cn = db_book.getContent(IDs[SelectedItem]);
-                DeleteYN(cn.getID());
-                dialog_book_edit.dismiss();
-            }
-        });
-        dialog_book_edit.show();
-    }
     private void selectPhoto() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
@@ -368,14 +383,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return imgPath;
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
     public void AddSampleBook_Basics(){
-        InputStream databaseInputStream = getResources().openRawResource(R.raw.ex0_elementry);
+        AddBook(getString(R.string.exKeyString01),"",7,2);
+        AddBook(getString(R.string.exKeyString02),"",7,2);
+        AddBook(getString(R.string.exKeyString03),"",7,2);
+        AddBook(getString(R.string.exKeyString04),"",7,2);
+        AddBook(getString(R.string.exKeyString05),"",7,2);
+        AddBook(getString(R.string.exKeyString06),"",4,3);
+        ReadDataBase();
+        DisplayList();
+    }
+    public void AddSampleBook_Basics_old(){
+        InputStream databaseInputStream = getResources().openRawResource(R.raw.ex1_elementry);
         String pathName = NaimoDataExportPath + "sample_element.zip";
         Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
 
@@ -387,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivityForResult(intent,REQ_CODE_DOWNLOAD_DAUM_OPEN_WORD_NOTE);
     }
     private void AddBookFromContactPictures(){
-        long bookID = AddBook("사람이름 외우기"," ");
+        long bookID = AddBook("사람이름 외우기(연락처)"," ");
         Content_Book cb = db_book.getContent(bookID);
 
         Intent intent = new Intent(MainActivity.this, WordListActivity.class);
@@ -441,13 +460,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         intent.putExtra("importZipFile", "");
         intent.putExtra("importXlsFile", xlsFilePathName);
         startActivityForResult(intent,REQ_CODE_NUM_ITEM);
-    }
-    private long AddBook(String text1, String text2){
-        if(text1.length() != 0){
-            return db_book.addContent(new Content_Book(text1, text2));
-        }else{
-            return -1;
-        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -524,6 +536,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -531,21 +549,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.add_sample_note_presidents) {
-            //AddSampleBook_Presidents();
-            String pathName = NaimoDataExportPath + "sample_presidents.zip";
-            String bookName = "Presidents Name(sample)";
-            AddBookFromZipFile_DIRECT(bookName,pathName);
-
+//        if (id == R.id.add_sample_note_presidents) {
+//            //AddSampleBook_Presidents();
+//            String pathName = NaimoDataExportPath + "sample_presidents.zip";
+//            String bookName = "Presidents Name(sample)";
+//            AddBookFromZipFile_DIRECT(bookName,pathName);
+//
+//            return true;
+//        }
+        if (id == R.id.add_sample_note_01) {
+            InputStream databaseInputStream = getResources().openRawResource(R.raw.ex1_elementry);
+            String pathName = NaimoDataExportPath + "tmpSample.zip";
+            Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
+            String bookName = getResources().getString(R.string.exKeyString01) + "(샘플)";
+            AddBookFromZipFile(bookName,pathName);
             return true;
         }
-        if (id == R.id.add_sample_note_natinal_flags) {
+        if (id == R.id.add_sample_note_02) {
+            InputStream databaseInputStream = getResources().openRawResource(R.raw.ex2_midium);
+            String pathName = NaimoDataExportPath + "tmpSample.zip";
+            Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
+            String bookName = getResources().getString(R.string.exKeyString02) + "(샘플)";
+            AddBookFromZipFile(bookName,pathName);
             return true;
         }
-        if (id == R.id.add_sample_note_president_rok) {
+        if (id == R.id.add_sample_note_03) {
+            InputStream databaseInputStream = getResources().openRawResource(R.raw.ex3_high);
+            String pathName = NaimoDataExportPath + "tmpSample.zip";
+            Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
+            String bookName = getResources().getString(R.string.exKeyString03) + "(샘플)";
+            AddBookFromZipFile(bookName,pathName);
             return true;
         }
-        if (id == R.id.add_sample_note_english_korean) {
+        if (id == R.id.add_sample_note_04) {
+            InputStream databaseInputStream = getResources().openRawResource(R.raw.ex4_toeic);
+            String pathName = NaimoDataExportPath + "tmpSample.zip";
+            Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
+            String bookName = getResources().getString(R.string.exKeyString04) + "(샘플)";
+            AddBookFromZipFile(bookName,pathName);
+            return true;
+        }
+        if (id == R.id.add_sample_note_05) {
+            InputStream databaseInputStream = getResources().openRawResource(R.raw.ex5_conversation);
+            String pathName = NaimoDataExportPath + "tmpSample.zip";
+            Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
+            String bookName = getResources().getString(R.string.exKeyString05) + "(샘플)";
+            AddBookFromZipFile(bookName,pathName);
+            return true;
+        }
+        if (id == R.id.add_sample_note_06) {
+            InputStream databaseInputStream = getResources().openRawResource(R.raw.ex6_presidents_rok);
+            String pathName = NaimoDataExportPath + "tmpSample.zip";
+            Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
+            String bookName = getResources().getString(R.string.exKeyString06) + "(샘플)";
+            AddBookFromZipFile(bookName,pathName);
             return true;
         }
         if (id == R.id.import_wordNote_DAUM) {

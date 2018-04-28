@@ -42,5 +42,11 @@
     <string name="privacyPolicy">개인정보처리방침</string>
     <string name="review">어플 리뷰</string>
     <string name="delete">삭제</string>
+    <string name="exKeyString01">초등 단어장</string>
+    <string name="exKeyString02">중등 단어장</string>
+    <string name="exKeyString03">고등 단어장</string>
+    <string name="exKeyString04">TOEIC 단어장</string>
+    <string name="exKeyString05">회화 단어장</string>
+    <string name="exKeyString06">사람이름 외우기(한국의 대통령)</string>
 
 </resources>

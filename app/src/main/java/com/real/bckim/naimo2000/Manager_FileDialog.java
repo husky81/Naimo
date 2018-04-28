@@ -37,7 +37,7 @@ public class Manager_FileDialog {
         this(activity, initialPath, null);
     }
 
-    public Manager_FileDialog(Activity activity, File initialPath, String fileEndsWith) {
+    Manager_FileDialog(Activity activity, File initialPath, String fileEndsWith) {
         this.activity = activity;
         setFileEndsWith(fileEndsWith);
         if (!initialPath.exists()) initialPath = Environment.getExternalStorageDirectory();
@@ -47,7 +47,7 @@ public class Manager_FileDialog {
     /**
      * @return file dialog
      */
-    public Dialog createFileDialog() {
+    private Dialog createFileDialog() {
         Dialog dialog = null;
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 

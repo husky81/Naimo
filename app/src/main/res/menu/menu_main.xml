@@ -8,21 +8,27 @@
         android:enabled="true"
         android:icon="@drawable/plus_note"
         android:orderInCategory="100"
-        android:title="Add sample note"
-        android:visible="true" >
-        <menu >
+        android:title="샘플 단어장 가져오기"
+        android:visible="true">
+        <menu>
             <item
-                android:id="@+id/add_sample_note_presidents"
-                android:title="Presidents" />
+                android:id="@+id/add_sample_note_01"
+                android:title="@string/exKeyString01" />
             <item
-                android:id="@+id/add_sample_note_natinal_flags"
-                android:title="National flags" />
+                android:id="@+id/add_sample_note_02"
+                android:title="@string/exKeyString02" />
             <item
-                android:id="@+id/add_sample_note_president_rok"
-                android:title="한국의대통령" />
+                android:id="@+id/add_sample_note_03"
+                android:title="@string/exKeyString03" />
             <item
-                android:id="@+id/add_sample_note_english_korean"
-                android:title="영어단어장(4000제)" />
+                android:id="@+id/add_sample_note_04"
+                android:title="@string/exKeyString04" />
+            <item
+                android:id="@+id/add_sample_note_05"
+                android:title="@string/exKeyString05" />
+            <item
+                android:id="@+id/add_sample_note_06"
+                android:title="@string/exKeyString06" />
         </menu>
     </item>
 </menu>

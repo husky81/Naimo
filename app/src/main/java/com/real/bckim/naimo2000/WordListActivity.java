@@ -73,10 +73,11 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.real.bckim.naimo2000.MainActivity.NaimoDataExportPath;
 import static com.real.bckim.naimo2000.MainActivity.REQ_CODE_SELECT_IMAGE;
 
 public class WordListActivity extends AppCompatActivity {
-    static String BookName;
+    static String bookName;
     static int bookID;
     static ListDataHandler_Book db_book;
     public static Content_Book content_Book;
@@ -128,14 +129,16 @@ public class WordListActivity extends AppCompatActivity {
 
         //Data base setting
         Intent intent = getIntent();
-        BookName = intent.getStringExtra("bookName");
-        setTitle(BookName);
+        bookName = intent.getStringExtra("bookName");
+        setTitle(bookName);
         bookID = intent.getIntExtra("bookID",0);
         db_book = MainActivity.db_book;
         content_Book = db_book.getContent(bookID);
 
         Word_DB_Name = pre_Word_DB_Name + bookID;
         db_word = new ListDataHandler_Word(this, Word_DB_Name);
+
+        numWord = db_word.getCount();
 
         Manager_PreviewImage.setDataBaseName(Word_DB_Name);
         wordList = findViewById(R.id.wordList);
@@ -144,6 +147,18 @@ public class WordListActivity extends AppCompatActivity {
         quizArraySizeCol = intent.getIntExtra("QuizArraySize_Col",2);
 
         db_word.setSearchingWord("");
+
+        if(numWord==0){requestImportCall();}
+
+        ReadWordDataBase();
+        customAdapter_word = new CustomAdapter_Word(this,contents);
+        DisplayList();
+
+        ListViewClickEventSetting();
+        ActivityResultsPreperation();
+    }
+    private void requestImportCall(){
+        Intent intent = getIntent();
 
         importZipFile = intent.getStringExtra("importZipFile");
         if(importZipFile !=null && !zip_xls_ImportComplete){
@@ -169,12 +184,26 @@ public class WordListActivity extends AppCompatActivity {
             getPicturesFolderByUser();
         }
 
-        ReadWordDataBase();
-        customAdapter_word = new CustomAdapter_Word(this,contents);
-        DisplayList();
+        if(bookName.equals(getResources().getString(R.string.exKeyString01))){
+            ImportNaimoZipResourceFile(R.raw.ex1_elementry);
+        }else if(bookName.equals(getResources().getString(R.string.exKeyString02))){
+            ImportNaimoZipResourceFile(R.raw.ex2_midium);
+        }else if(bookName.equals(getResources().getString(R.string.exKeyString03))){
+            ImportNaimoZipResourceFile(R.raw.ex3_high);
+        }else if(bookName.equals(getResources().getString(R.string.exKeyString04))){
+            ImportNaimoZipResourceFile(R.raw.ex4_toeic);
+        }else if(bookName.equals(getResources().getString(R.string.exKeyString05))){
+            ImportNaimoZipResourceFile(R.raw.ex5_conversation);
+        }else if(bookName.equals(getResources().getString(R.string.exKeyString06))){
+            ImportNaimoZipResourceFile(R.raw.ex6_presidents_rok);
+        }
+    }
+    private void ImportNaimoZipResourceFile(int exResource){
+        InputStream databaseInputStream = getResources().openRawResource(exResource);
+        String pathName = NaimoDataExportPath + "sample_element.zip";
+        Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
 
-        ListViewClickEventSetting();
-        ActivityResultsPreperation();
+        new ImportNaimoZipFile(this,pathName).execute();
     }
     private void ActivityResultsPreperation(){
         Intent data = new Intent();
@@ -443,16 +472,16 @@ public class WordListActivity extends AppCompatActivity {
     }
     public void ExportNoteToZipFile(String Word_DB_Name){
         ExportNoteToFolder(Word_DB_Name);
-        String ExportedPath = MainActivity.NaimoDataExportPath + Word_DB_Name + "/";
+        String ExportedPath = NaimoDataExportPath + Word_DB_Name + "/";
         String[] allFiles = Manager_SystemControl.getAllFilePathNames(ExportedPath);
         String downLoadPath = Manager_SystemControl.getDownloadPath();
-        String zipFileName = downLoadPath+Word_DB_Name + "_" + BookName +".zip";
+        String zipFileName = downLoadPath+Word_DB_Name + "_" + bookName +".zip";
         Manager_SystemControl.makeZipFile(allFiles,zipFileName);
         Manager_SystemControl.deleteFolder(ExportedPath);
         Toast.makeText(this,"Generated Naimo ZIP file : " + zipFileName ,Toast.LENGTH_LONG).show();
     }
     public static void ExportNoteToFolder(String Word_DB_Name){
-        String TargetFolder =  MainActivity.NaimoDataExportPath + Word_DB_Name + "/";
+        String TargetFolder =  NaimoDataExportPath + Word_DB_Name + "/";
         File folder = new File(TargetFolder);
         folder.mkdirs();
         ReadWordDataBase();
@@ -918,10 +947,10 @@ public class WordListActivity extends AppCompatActivity {
         managerFileDialog.showDialog();
     }
     public void getExportedBookDataXlsFileByUser(){
-        InputStream databaseInputStream = getResources().openRawResource(R.raw.kbc_words);
+        //InputStream databaseInputStream = getResources().openRawResource(R.raw.kbc_words);
         File mPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        String pathName = mPath.getPath() + "/" + "sample_wordbook_daum.xls";
-        Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
+        //String pathName = mPath.getPath() + "/" + "sample_wordbook_daum.xls";
+        //Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
 
         final Manager_FileDialog managerFileDialog = new Manager_FileDialog(this, mPath, ".xls");
         managerFileDialog.addFileListener(new Manager_FileDialog.FileSelectedListener() {
@@ -1248,7 +1277,7 @@ public class WordListActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            dialog.setMessage("Importing words from a zip file, please wait.");
+            dialog.setMessage("Naimo ZIP 파일에서 단어를 불러오고 있습니다.");
             dialog.show();
             dialog.setCancelable(false);
         }
@@ -1275,7 +1304,7 @@ public class WordListActivity extends AppCompatActivity {
             }
             ReadWordDataBase();
             DisplayList();
-
+            //Toast.makeText(dialog.getContext()," " + db_word.getCount() + " 건",Toast.LENGTH_SHORT).show();
         }
     }
     public static class ExportWordsToZipFile extends AsyncTask<Void, Void, Void> {
@@ -1294,10 +1323,10 @@ public class WordListActivity extends AppCompatActivity {
 
         protected Void doInBackground(Void... args) {
             ExportNoteToFolder(Word_DB_Name);
-            String ExportedPath = MainActivity.NaimoDataExportPath + Word_DB_Name + "/";
+            String ExportedPath = NaimoDataExportPath + Word_DB_Name + "/";
             String[] allFiles = Manager_SystemControl.getAllFilePathNames(ExportedPath);
             String downLoadPath = Manager_SystemControl.getDownloadPath();
-            String zipFileName = downLoadPath+Word_DB_Name + "_" + BookName +".zip";
+            String zipFileName = downLoadPath+Word_DB_Name + "_" + bookName +".zip";
             Manager_SystemControl.makeZipFile(allFiles,zipFileName);
             Manager_SystemControl.deleteFolder(ExportedPath);
             return null;

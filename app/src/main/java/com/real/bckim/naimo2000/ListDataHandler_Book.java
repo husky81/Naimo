@@ -167,18 +167,26 @@ class Content_Book {
     private int quizSizeCol;
     private long DateTime;
 
-    public Content_Book(){
+    Content_Book(){
         this.numItem = 0;
         this.quizSizeRow=3;
         this.quizSizeCol=2;
         this.DateTime = System.currentTimeMillis();
     }
-    public Content_Book(String text1, String text2){
+    Content_Book(String text1, String text2){
         this.text1 = text1;
         this.text2 = text2;
         this.numItem = 0;
         this.quizSizeRow=3;
         this.quizSizeCol=2;
+        this.DateTime = System.currentTimeMillis();
+    }
+    Content_Book(String text1, String text2, int row, int col){
+        this.text1 = text1;
+        this.text2 = text2;
+        this.numItem = 0;
+        this.quizSizeRow=row;
+        this.quizSizeCol=col;
         this.DateTime = System.currentTimeMillis();
     }
     public int getID(){
