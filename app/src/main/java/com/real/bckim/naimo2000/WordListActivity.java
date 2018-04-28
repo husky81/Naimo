@@ -585,14 +585,13 @@ public class WordListActivity extends AppCompatActivity {
                     text[col]=myCell.toString();
                 }
                 Content_Word cn = new Content_Word();
-                cn.setText1(text[1]);
-                cn.setText2(text[2]);
-                cn.setText3(text[3]);
-                cn.setText4(text[4]);
+                cn.setText1(text[2]);
+                cn.setText2(text[3]);
+                cn.setText3(text[4]);
+                cn.setText4(text[5]);
                 int id = db_word.addContent(cn);
 
-                float fltID = Float.parseFloat(text[0]);
-                int exportedID = Integer.parseInt(text[0]);
+                int exportedID = (int) Float.parseFloat(text[1]);
                 String ImagePathName = ExportedBookDataFolder + Manager_PreviewImage.getPreviewImageFileName(exportedID);
                 Manager_PreviewImage.deletePreviewImage(id);
                 if(Manager_PreviewImage.setPreviewImage(ImagePathName,id)){
