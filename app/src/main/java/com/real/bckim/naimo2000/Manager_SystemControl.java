@@ -189,7 +189,6 @@ public class Manager_SystemControl {
     }
     public static void unpackZipToSubFolder(String zipFile){
         File fileZip = new File(zipFile);
-        String oriPathName = zipFile;
         String path = getPathFromPathName(zipFile);
         String fn = getFileName(zipFile);
         String fnwoext = getFileNameWithoutExtensionFromPathName(zipFile);
@@ -199,9 +198,9 @@ public class Manager_SystemControl {
         fileZip.renameTo(new File(newPathName));
         unpackZip(newPathName);
         fileZip = new File(newPathName);
-        fileZip.renameTo(new File(oriPathName));
+        fileZip.renameTo(new File(zipFile));
     }
-    public static boolean unpackZip(String zipFilePathName) {
+    static boolean unpackZip(String zipFilePathName) {
         String path = getPathFromPathName(zipFilePathName);
         String fn = getFileName(zipFilePathName);
         InputStream is;

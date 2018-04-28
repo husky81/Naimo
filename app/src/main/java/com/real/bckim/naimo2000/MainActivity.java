@@ -122,11 +122,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case (REQ_ADD_SAMPLE_NOTES): {
                 Manager_SystemControl.makeFolder(NaimoDataExportPath);
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    AddSampleBook_Presidents();
+                    AddSampleBook_Basics();
                 } else {
-                    Toast.makeText(this, "단어장을 사용하기 위해서는 외부 저장장치 읽기/쓰기 권한이 필요합니다.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "기본 단어장을 불러오기 위해서는 외부 저장장치 읽기/쓰기 권한이 필요합니다.", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
         }
     }
@@ -375,37 +374,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    public void AddSampleBook_Presidents(){
-        InputStream databaseInputStream = getResources().openRawResource(R.raw.sample_presidents);
-        String pathName = NaimoDataExportPath + "sample_presidents.zip";
+    public void AddSampleBook_Basics(){
+        InputStream databaseInputStream = getResources().openRawResource(R.raw.ex0_elementry);
+        String pathName = NaimoDataExportPath + "sample_element.zip";
         Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
 
-        String bookName = "Presidents Name(sample)";
-        AddBookFromZipFile(bookName,pathName);
-    }
-    public void AddSampleBook_NationalFlags(){
-        InputStream databaseInputStream = getResources().openRawResource(R.raw.sample_flags);
-        String pathName = NaimoDataExportPath + "sample_national_flags.zip";
-        Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
-
-        String bookName = "National Flags(sample)";
-        AddBookFromZipFile(bookName,pathName);
-    }
-    public void AddSampleBook_PresidentsKOR(){
-        InputStream databaseInputStream = getResources().openRawResource(R.raw.sample_president_kor);
-        String pathName = NaimoDataExportPath + "sample_presidents_korea.zip";
-        Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
-
-        String bookName = "한국의대통령(sample)";
-        AddBookFromZipFile(bookName,pathName);
-    }
-    public void AddSampleBook_EnglishKorean(){
-        InputStream databaseInputStream = getResources().openRawResource(R.raw.sample_english_word);
-        String pathName = NaimoDataExportPath + "sample_english_korean.zip";
-        Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
-
-        String bookName = "영어단어장(4000제)";
-        AddBookFromZipFile(bookName,pathName);
+        String bookName = "초등 단어장";
+        AddBookFromZipFile_DIRECT(bookName,pathName);
     }
     private void DownloadDAUM_openWordBook(){
         Intent intent = new Intent(MainActivity.this, GetDaumPublicWordNoteActivity.class);
@@ -434,6 +409,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         intent.putExtra("QuizArraySize_Col",cb.getQuizSizeCol());
         intent.putExtra("importPictureFolder", "true");
         startActivityForResult(intent,REQ_CODE_NUM_ITEM);
+    }
+    public void AddBookFromZipFile_DIRECT(String bookName, String zipFilePathName){
+        long bookID = AddBook(bookName," ");
+        String Word_DB_Name = WordListActivity.pre_Word_DB_Name + bookID;
+        WordListActivity.db_word = new ListDataHandler_Word(this, Word_DB_Name);
+
+        new WordListActivity.ImportNaimoZipFile(this,zipFilePathName).execute();
     }
     public void AddBookFromZipFile(String bookName, String zipFilePathName){
         long bookID = AddBook(bookName," ");
@@ -550,19 +532,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.add_sample_note_presidents) {
-            AddSampleBook_Presidents();
+            //AddSampleBook_Presidents();
+            String pathName = NaimoDataExportPath + "sample_presidents.zip";
+            String bookName = "Presidents Name(sample)";
+            AddBookFromZipFile_DIRECT(bookName,pathName);
+
             return true;
         }
         if (id == R.id.add_sample_note_natinal_flags) {
-            AddSampleBook_NationalFlags();
             return true;
         }
         if (id == R.id.add_sample_note_president_rok) {
-            AddSampleBook_PresidentsKOR();
             return true;
         }
         if (id == R.id.add_sample_note_english_korean) {
-            AddSampleBook_EnglishKorean();
             return true;
         }
         if (id == R.id.import_wordNote_DAUM) {

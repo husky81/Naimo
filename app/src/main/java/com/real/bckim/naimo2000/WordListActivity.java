@@ -106,8 +106,8 @@ public class WordListActivity extends AppCompatActivity {
     final int REQ_ADD_CONTACT_PICTURES = 104;
 
     final static String REQUEST_IMAGE_FILE_NAME = "getImageFileName2342";
-    boolean zip_xls_ImportComplete;
-    String importZipFile;
+    static boolean zip_xls_ImportComplete;
+    static String importZipFile;
     String importXlsFile;
 
     static ListView wordList;
@@ -148,7 +148,7 @@ public class WordListActivity extends AppCompatActivity {
         importZipFile = intent.getStringExtra("importZipFile");
         if(importZipFile !=null && !zip_xls_ImportComplete){
             if(!importZipFile.equals("")){
-                new LoadSampleBook_zipFile(this).execute();
+                new LoadSampleBook_zipFile(this,importZipFile).execute();
             }else {
                 importXlsFile = intent.getStringExtra("importXlsFile");
                 if(importXlsFile!=""){
@@ -557,7 +557,7 @@ public class WordListActivity extends AppCompatActivity {
             }
         }
     }
-    private void ImportWordsFromFolder_xls(final String ExportedBookDataFolder){
+    private static void ImportWordsFromFolder_xls(final String ExportedBookDataFolder){
         String NaimoZipFilePathName = ExportedBookDataFolder + FileName_NaimoDataList + ".xls";
 
         File file = new File(NaimoZipFilePathName);
@@ -604,7 +604,7 @@ public class WordListActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    private void ImportWordsFromFolder_csv(final String ExportedBookDataFolder){
+    private static void ImportWordsFromFolder_csv(final String ExportedBookDataFolder){
         String ImagePathName;
         String ExportedBookDataPathName = ExportedBookDataFolder + FileName_NaimoDataList + ".csv";
         int lastPosition = numWord-1;
@@ -636,19 +636,19 @@ public class WordListActivity extends AppCompatActivity {
             br.close();
         }catch (FileNotFoundException e){
             e.printStackTrace();
-            Toast.makeText(this, "File not Found", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "File not Found", Toast.LENGTH_SHORT).show();
         }catch (IOException e) {
             e.printStackTrace();
         }
     }
-    private void ImportWordsFromZipFile(String zipFile_ExportedBookData){
+    private static void ImportWordsFromZipFile(String zipFile_ExportedBookData){
         if(zipFile_ExportedBookData==null) return;
         File file = new File(zipFile_ExportedBookData);if(!file.exists()) return;
         String path = Manager_SystemControl.getPathFromPathName(zipFile_ExportedBookData);
         String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(zipFile_ExportedBookData);
         String fn = Manager_SystemControl.getFileName(zipFile_ExportedBookData);
         Manager_SystemControl.unpackZipToSubFolder(zipFile_ExportedBookData);
-        ImportWordsFromFolder_csv(path + fnwoext +"/");
+        ImportWordsFromFolder_xls(path + fnwoext +"/");
         Manager_SystemControl.deleteFolder(path + fnwoext +"/");
     }
     private void importContactPictures_code_particles(){
@@ -918,7 +918,7 @@ public class WordListActivity extends AppCompatActivity {
         managerFileDialog.showDialog();
     }
     public void getExportedBookDataXlsFileByUser(){
-        InputStream databaseInputStream = getResources().openRawResource(R.raw.wordbook);
+        InputStream databaseInputStream = getResources().openRawResource(R.raw.kbc_words);
         File mPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         String pathName = mPath.getPath() + "/" + "sample_wordbook_daum.xls";
         Manager_SystemControl.saveFileFromInputStream(databaseInputStream,pathName);
@@ -1204,12 +1204,14 @@ public class WordListActivity extends AppCompatActivity {
             DisplayList();
         }
     }
-    private class LoadSampleBook_zipFile extends AsyncTask<Void, Void, Void> {
+    public static class LoadSampleBook_zipFile extends AsyncTask<Void, Void, Void> {
         private ProgressDialog dialog;
+        private String naimoZipPathName;
 
 
-        public LoadSampleBook_zipFile(WordListActivity activity) {
+        LoadSampleBook_zipFile(Activity activity,String naimoZipPathName) {
             dialog = new ProgressDialog(activity);
+            this.naimoZipPathName = naimoZipPathName;
         }
 
         @Override
@@ -1220,9 +1222,9 @@ public class WordListActivity extends AppCompatActivity {
         }
 
         protected Void doInBackground(Void... args) {
-            ImportWordsFromZipFile(importZipFile);
-            zip_xls_ImportComplete =true;
-            Manager_SystemControl.deleteFile(importZipFile);
+            ImportWordsFromZipFile(naimoZipPathName);
+            zip_xls_ImportComplete = true;
+            Manager_SystemControl.deleteFile(naimoZipPathName);
             return null;
         }
 
@@ -1235,11 +1237,11 @@ public class WordListActivity extends AppCompatActivity {
             DisplayList();
         }
     }
-    private class ImportNaimoZipFile extends AsyncTask<Void, Void, Void> {
+    public static class ImportNaimoZipFile extends AsyncTask<Void, Void, Void> {
         private ProgressDialog dialog;
         private String zipFile_ExportedBookData;
 
-        ImportNaimoZipFile(WordListActivity activity, String zipFilePathName) {
+        ImportNaimoZipFile(Activity activity, String zipFilePathName) {
             dialog = new ProgressDialog(activity);
             zipFile_ExportedBookData = zipFilePathName;
         }
@@ -1252,11 +1254,11 @@ public class WordListActivity extends AppCompatActivity {
         }
 
         protected Void doInBackground(Void... args) {
-            if(zipFile_ExportedBookData==null) finish();
+            //if(zipFile_ExportedBookData==null) finish();
             File file = new File(zipFile_ExportedBookData);
-            if(!file.exists()) {
-                finish();
-            }
+            //if(!file.exists()) {
+            //    finish();
+            //}
             String path = Manager_SystemControl.getPathFromPathName(zipFile_ExportedBookData);
             String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(zipFile_ExportedBookData);
             String fn = Manager_SystemControl.getFileName(zipFile_ExportedBookData);
@@ -1276,10 +1278,10 @@ public class WordListActivity extends AppCompatActivity {
 
         }
     }
-    private static class ExportWordsToZipFile extends AsyncTask<Void, Void, Void> {
+    public static class ExportWordsToZipFile extends AsyncTask<Void, Void, Void> {
         private ProgressDialog dialog;
 
-        private ExportWordsToZipFile(Activity activity) {
+        ExportWordsToZipFile(Activity activity) {
             dialog = new ProgressDialog(activity);
         }
 
