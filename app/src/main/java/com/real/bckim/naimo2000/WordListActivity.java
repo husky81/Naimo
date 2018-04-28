@@ -51,6 +51,11 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -58,11 +63,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -88,7 +92,7 @@ public class WordListActivity extends AppCompatActivity {
     static int quizArraySizeRow;
     static int quizArraySizeCol;
 
-    public static String FileName_NaimoDataList = "NaimoDataList.csv";
+    public static String FileName_NaimoDataList = "NaimoDataList";
     int LongClickSelectedItem;
     int SelectedItem;
     int selectedID;
@@ -452,10 +456,62 @@ public class WordListActivity extends AppCompatActivity {
         File folder = new File(TargetFolder);
         folder.mkdirs();
         ReadWordDataBase();
-        ExportBookDataToFolder(TargetFolder);
+        //ExportBookDataToFolder_csv(TargetFolder);
+        ExportBookDataToFolder_xls(TargetFolder);
     }
-    private static void ExportBookDataToFolder(String TargetFolder){
-        File file = new File(TargetFolder + FileName_NaimoDataList);
+    private static void ExportBookDataToFolder_xls(String TargetFolder){
+        Manager_SystemControl.deleteAllFile(TargetFolder);
+        String xlsPathName = TargetFolder + FileName_NaimoDataList + ".xls";
+
+        Workbook wb = new HSSFWorkbook();
+        try (OutputStream fileOut = new FileOutputStream(xlsPathName)) {
+            wb.write(fileOut);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Sheet sheet = wb.createSheet("sheet1");
+        CreationHelper createHelper = wb.getCreationHelper();
+
+        Row row = sheet.createRow(0);
+        Cell cell = row.createCell(0); cell.setCellValue("ID_word");
+        row.createCell(1).setCellValue("names");
+        row.createCell(2).setCellValue("mean");
+        row.createCell(3).setCellValue("memo");
+        row.createCell(4).setCellValue("pronunciation");
+
+            for(int i=0;i<numWord;i++){
+                Content_Word cw = db_word.getContent(IDs[i]);
+                String text1 = cw.getText1();
+                String text2 = cw.getText2();
+                String text3 = cw.getText3();
+                String text4 = cw.getText4();
+                if(text3==null) text3="";
+                if(text4==null) text4="";
+
+                row = sheet.createRow(i+1);
+                cell = row.createCell(0); cell.setCellValue(IDs[i]);
+                row.createCell(1).setCellValue(text1);
+                row.createCell(2).setCellValue(text2);
+                row.createCell(3).setCellValue(text3);
+                row.createCell(4).setCellValue(text4);
+                Manager_PreviewImage.savePreviewImage(IDs[i],TargetFolder, Manager_PreviewImage.getPreviewImageFileName(IDs[i]));
+            }
+
+        // Write the output to a file
+        try (OutputStream fileOut = new FileOutputStream(xlsPathName)) {
+            wb.write(fileOut);
+            wb.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private static void ExportBookDataToFolder_csv(String TargetFolder){
+        File file = new File(TargetFolder + FileName_NaimoDataList + ".csv");
         Manager_SystemControl.deleteAllFile(TargetFolder);
 
         FileOutputStream fos = null;
@@ -501,38 +557,57 @@ public class WordListActivity extends AppCompatActivity {
             }
         }
     }
-    private void ExportBookDataToFolder_old(String TargetFolder){
-        File file = new File(TargetFolder + FileName_NaimoDataList);
-        Manager_SystemControl.deleteAllFile(TargetFolder);
+    private void ImportWordsFromFolder_xls(final String ExportedBookDataFolder){
+        String NaimoZipFilePathName = ExportedBookDataFolder + FileName_NaimoDataList + ".xls";
 
-        FileWriter fw = null;
+        File file = new File(NaimoZipFilePathName);
+
         try {
-            fw = new FileWriter(file) ;
-            fw.write("ID_word, names, memos, \n") ;
-        } catch (Exception e) {
-            e.printStackTrace() ;
-        }
-        for(int i=0;i<numWord;i++){
-            Content_Word cw = db_word.getContent(IDs[i]);
-            try {
-                fw.write(IDs[i] +","+ cw.getText1() +","+ cw.getText2()+",\n");
-            } catch (Exception e) {
-                e.printStackTrace() ;
+            FileInputStream is = new FileInputStream(file);
+            POIFSFileSystem fs = new POIFSFileSystem(is);
+            HSSFWorkbook wb = new HSSFWorkbook(fs);
+            HSSFSheet mySheet = wb.getSheetAt(0);
+
+            int col = 0;
+            String[] text = new String[10];
+
+            Iterator rowIter = mySheet.rowIterator();
+            rowIter.next();
+            while (rowIter.hasNext())
+            {
+                HSSFRow myRow = (HSSFRow) rowIter.next();
+                col = 0;
+
+                Iterator cellIter = myRow.cellIterator();
+                while (cellIter.hasNext()) {
+                    col += 1;
+                    HSSFCell myCell = (HSSFCell) cellIter.next();
+                    text[col]=myCell.toString();
+                }
+                Content_Word cn = new Content_Word();
+                cn.setText1(text[1]);
+                cn.setText2(text[2]);
+                cn.setText3(text[3]);
+                cn.setText4(text[4]);
+                int id = db_word.addContent(cn);
+
+                float fltID = Float.parseFloat(text[0]);
+                int exportedID = Integer.parseInt(text[0]);
+                String ImagePathName = ExportedBookDataFolder + Manager_PreviewImage.getPreviewImageFileName(exportedID);
+                Manager_PreviewImage.deletePreviewImage(id);
+                if(Manager_PreviewImage.setPreviewImage(ImagePathName,id)){
+                    setHasImage(id,true);
+                }
             }
-            Manager_PreviewImage.savePreviewImage(IDs[i],TargetFolder, Manager_PreviewImage.getPreviewImageFileName(IDs[i]));
-        }
-        if (fw != null) {
-            //close file
-            try {
-                fw.close() ;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-    private void ImportWordsFromFolder(final String ExportedBookDataFolder){
+    private void ImportWordsFromFolder_csv(final String ExportedBookDataFolder){
         String ImagePathName;
-        String ExportedBookDataPathName = ExportedBookDataFolder + FileName_NaimoDataList;
+        String ExportedBookDataPathName = ExportedBookDataFolder + FileName_NaimoDataList + ".csv";
         int lastPosition = numWord-1;
         try{
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(ExportedBookDataPathName)),"euc-kr"));
@@ -546,9 +621,7 @@ public class WordListActivity extends AppCompatActivity {
                 String[] row = Manager_SystemControl.splitCSV(lineString);
 
                 String[] texts = new String[5];
-                for(int i=0;i<row.length;i++){
-                    texts[i]=row[i];
-                }
+                System.arraycopy(row,0,texts,0,row.length);
                 for(int i=row.length;i<5;i++){
                     texts[i]="";
                 }
@@ -569,67 +642,6 @@ public class WordListActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    private void ImportWordsFromFolder_old(final String ExportedBookDataFolder){
-        String ImagePathName;
-        String ExportedBookDataPathName = ExportedBookDataFolder + FileName_NaimoDataList;
-        int lastPosition = numWord-1;
-        try{
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(ExportedBookDataPathName)),"euc-kr"));
-            //BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(ExportedBookDataPathName)),"utf-8"));
-            //BufferedReader br = new BufferedReader(new FileReader(ExportedBookDataPathName));
-            //ref. https://www.androidpub.com/521127
-            String lineString = "";
-            String titleText = br.readLine();
-            while(((lineString = br.readLine()) != null)){
-                //String[] row = lineString.split(",");
-                String[] row = Manager_SystemControl.splitCSV(lineString);
-
-                String text1 = row[1];
-                String text2="";
-                if(row.length>2){
-                    text2 = row[2];
-                }
-                AddWord(text1, text2);
-            }
-            br.close();
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-            Toast.makeText(this, "File not Found", Toast.LENGTH_SHORT).show();
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ReadWordDataBase();
-
-
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(ExportedBookDataPathName));
-            String lineString = "";
-            String titleText = br.readLine();
-            int position = lastPosition;
-            while(((lineString = br.readLine()) != null)){
-                String[] row = lineString.split(",");
-                int ID = Integer.parseInt(row[0]);
-                ImagePathName = ExportedBookDataFolder + Manager_PreviewImage.getPreviewImageFileName(ID);
-                position=position+1;
-                Manager_PreviewImage.deletePreviewImage(IDs[position]);
-                if(Manager_PreviewImage.setPreviewImage(ImagePathName,IDs[position])){
-                    setHasImage(IDs[position],true);
-                };
-            }
-            br.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        //Toast.makeText(this, readStr.substring(0, readStr.length()-1), Toast.LENGTH_SHORT).show();
-
-        //DisplayList();
-    }
     private void ImportWordsFromZipFile(String zipFile_ExportedBookData){
         if(zipFile_ExportedBookData==null) return;
         File file = new File(zipFile_ExportedBookData);if(!file.exists()) return;
@@ -637,18 +649,8 @@ public class WordListActivity extends AppCompatActivity {
         String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(zipFile_ExportedBookData);
         String fn = Manager_SystemControl.getFileName(zipFile_ExportedBookData);
         Manager_SystemControl.unpackZipToSubFolder(zipFile_ExportedBookData);
-        ImportWordsFromFolder(path + fnwoext +"/");
+        ImportWordsFromFolder_csv(path + fnwoext +"/");
         Manager_SystemControl.deleteFolder(path + fnwoext +"/");
-    }
-    private void ImportPicturesFromFolder_old(String pictureFolderPath){
-        String[] fns = Manager_SystemControl.getAllFilePathNames(pictureFolderPath);
-        for(String fn : fns){
-            String ext = Manager_SystemControl.getExtension(fn).toLowerCase();
-            String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(fn);
-            if(ext.equals("png") || ext.equals("jpg")){
-                AddWord(fn,fnwoext," ");
-            }
-        }
     }
     private void importContactPictures_code_particles(){
         int id = db_word.addContent(new Content_Word("test", ""));
@@ -903,15 +905,15 @@ public class WordListActivity extends AppCompatActivity {
         content_Book.setQuizSizeCol(quizArraySizeCol);
         db_book.updateContent(content_Book);
     }
-    public void getExportedBookDataZipFileByUser(){
+    public void ImportNaimoZipFileByUser(){
         //File mPath = new File(Environment.getExternalStorageDirectory() + "//DIR//");
         File mPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         final Manager_FileDialog managerFileDialog = new Manager_FileDialog(this, mPath, ".zip");
         managerFileDialog.addFileListener(new Manager_FileDialog.FileSelectedListener() {
             public void fileSelected(File file) {
                 managerFileDialog.removeFileListener(this);
-                //ImportWordsFromZipFile(file.getPath());
-                new ImportWordsFromZipFile(WordListActivity.this,file.getPath()).execute();
+                //ImportNaimoZipFile(file.getPath());
+                new ImportNaimoZipFile(WordListActivity.this,file.getPath()).execute();
             }
         });
         managerFileDialog.showDialog();
@@ -1130,7 +1132,7 @@ public class WordListActivity extends AppCompatActivity {
         private ProgressDialog dialog;
         private String xlsFile_ExportedBookData;
 
-        public LoadDaumXlsFile(WordListActivity activity, String xlsFile) {
+        LoadDaumXlsFile(WordListActivity activity, String xlsFile) {
             dialog = new ProgressDialog(activity);
             xlsFile_ExportedBookData=xlsFile;
         }
@@ -1157,7 +1159,6 @@ public class WordListActivity extends AppCompatActivity {
                 int row = 0;
                 int col = 0;
                 String[] text = new String[10];
-
 
                 Iterator rowIter = mySheet.rowIterator();
                 while (rowIter.hasNext())
@@ -1235,11 +1236,11 @@ public class WordListActivity extends AppCompatActivity {
             DisplayList();
         }
     }
-    private class ImportWordsFromZipFile extends AsyncTask<Void, Void, Void> {
+    private class ImportNaimoZipFile extends AsyncTask<Void, Void, Void> {
         private ProgressDialog dialog;
         private String zipFile_ExportedBookData;
 
-        public ImportWordsFromZipFile(WordListActivity activity, String zipFilePathName) {
+        ImportNaimoZipFile(WordListActivity activity, String zipFilePathName) {
             dialog = new ProgressDialog(activity);
             zipFile_ExportedBookData = zipFilePathName;
         }
@@ -1261,7 +1262,7 @@ public class WordListActivity extends AppCompatActivity {
             String fnwoext = Manager_SystemControl.getFileNameWithoutExtensionFromPathName(zipFile_ExportedBookData);
             String fn = Manager_SystemControl.getFileName(zipFile_ExportedBookData);
             Manager_SystemControl.unpackZipToSubFolder(zipFile_ExportedBookData);
-            ImportWordsFromFolder(path + fnwoext +"/");
+            ImportWordsFromFolder_xls(path + fnwoext +"/");
             Manager_SystemControl.deleteFolder(path + fnwoext +"/");
             return null;
         }
@@ -1279,7 +1280,7 @@ public class WordListActivity extends AppCompatActivity {
     private static class ExportWordsToZipFile extends AsyncTask<Void, Void, Void> {
         private ProgressDialog dialog;
 
-        private ExportWordsToZipFile(WordListActivity activity) {
+        private ExportWordsToZipFile(Activity activity) {
             dialog = new ProgressDialog(activity);
         }
 
@@ -1414,7 +1415,6 @@ public class WordListActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), R.string.noWordMessage,Toast.LENGTH_LONG).show();
                 return false;
             }
-            //ExportNoteToZipFile(Word_DB_Name);
             new ExportWordsToZipFile(WordListActivity.this).execute();
             return true;
         }
@@ -1434,7 +1434,7 @@ public class WordListActivity extends AppCompatActivity {
         if (id == R.id.action_import_words_from_zipfile) {
             Toast.makeText(this,"Naimo ZIP 파일이 있는 폴더를 선택하세요.",Toast.LENGTH_LONG).show();
 
-            getExportedBookDataZipFileByUser();
+            ImportNaimoZipFileByUser();
             return true;
         }
         if (id == R.id.action_import_words_from_xlsfile) {
