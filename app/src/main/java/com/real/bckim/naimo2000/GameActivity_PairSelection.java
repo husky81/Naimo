@@ -2,6 +2,7 @@ package com.real.bckim.naimo2000;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +45,7 @@ public class GameActivity_PairSelection extends AppCompatActivity {
     int numButton;
     int numQuiz;
     ImageView[] btnQuiz;
+    int[] btnQuiz_OriginalColor;
     ArrayList<ProblemContent> ProblemList= new ArrayList<>();
 
     int[] btnArray;  //버튼섞는 난수배열
@@ -144,6 +147,8 @@ public class GameActivity_PairSelection extends AppCompatActivity {
     private void ButtonClickEventHandler(int btnID){
         speakBtnText(btnID);
 
+        SetButtonColorOn(btnID);
+
         if(lastSelectedButtonID== btnID){
             //같은 버튼은 두번 누른 경우 무시
             return;
@@ -164,7 +169,19 @@ public class GameActivity_PairSelection extends AppCompatActivity {
             //틀린 경우
             if(db_word.getContent(getIdFromBtnId(lastSelectedButtonID))!=null) AnswerCase_Wrong(lastSelectedButtonID);
             lastSelectedButtonID= btnID;
+            SetButtonColorOff(btnID);
         }
+    }
+    private void SetButtonColorOn(int btnID){
+        int originalColor;
+        originalColor = btnQuiz[btnID].getDrawingCacheBackgroundColor();
+        btnQuiz[btnID].setTag(1,originalColor);
+        btnQuiz[btnID].setBackgroundColor(getResources().getColor(R.color.clickedPairQuizButton));
+    }
+    private void SetButtonColorOff(int btnID){
+        int originalColor = btnQuiz[btnID].getTag(1);
+        btnQuiz[btnID].setBackgroundColor(getResources().getColor(R.color.pairGameButton1));
+
     }
     private void ButtonLongClickEventHandler(int btnID){
         SelectedID = getIdFromBtnId(btnID);

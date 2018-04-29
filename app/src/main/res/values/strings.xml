@@ -49,4 +49,7 @@
     <string name="exKeyString05">회화 단어장</string>
     <string name="exKeyString06">사람이름 외우기(한국의 대통령)</string>
 
+    <string name="confirmDeletion">Delete Confirm</string>
+    <string name="loading">loading...</string>
+
 </resources>

@@ -3,13 +3,14 @@
     <color name="colorPrimary">#4F81BD</color>
     <color name="colorPrimaryDark">#FF335A8A</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="listTextGrey">#FF999999</color>
+    <color name="listTextBlack">#FF000000</color>
+
     <color name="pairGameText">#FF000000</color>
     <color name="pairGameButton1">#66FFFFFF</color>
     <color name="pairGameButton2">#55CCCCCC</color>
-    <string name="confirmDeletion">Delete Confirm</string>
-    <string name="loading">loading...</string>
-    <color name="listTextGrey">#FF999999</color>
-    <color name="listTextBlack">#FF000000</color>
+    <color name="clickedPairQuizButton">#22bc00</color>
 
 
 </resources>
