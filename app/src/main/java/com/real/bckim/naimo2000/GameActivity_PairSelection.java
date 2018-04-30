@@ -167,19 +167,21 @@ public class GameActivity_PairSelection extends AppCompatActivity {
             return;
         } else {
             //틀린 경우
-            if(db_word.getContent(getIdFromBtnId(lastSelectedButtonID))!=null) AnswerCase_Wrong(lastSelectedButtonID);
+            if(db_word.getContent(getIdFromBtnId(lastSelectedButtonID))!=null) {
+                AnswerCase_Wrong(lastSelectedButtonID);
+                SetButtonColorOff(lastSelectedButtonID);
+            }
             lastSelectedButtonID= btnID;
-            SetButtonColorOff(btnID);
         }
     }
     private void SetButtonColorOn(int btnID){
-        int originalColor;
-        originalColor = btnQuiz[btnID].getDrawingCacheBackgroundColor();
-        btnQuiz[btnID].setTag(1,originalColor);
+        //int originalColor;
+        //originalColor = btnQuiz[btnID].getDrawingCacheBackgroundColor();
+        //btnQuiz[btnID].setTag(1,originalColor);
         btnQuiz[btnID].setBackgroundColor(getResources().getColor(R.color.clickedPairQuizButton));
     }
     private void SetButtonColorOff(int btnID){
-        int originalColor = btnQuiz[btnID].getTag(1);
+        //int originalColor = btnQuiz[btnID].getTag(1);
         btnQuiz[btnID].setBackgroundColor(getResources().getColor(R.color.pairGameButton1));
 
     }

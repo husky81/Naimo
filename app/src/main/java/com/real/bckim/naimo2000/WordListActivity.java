@@ -143,8 +143,8 @@ public class WordListActivity extends AppCompatActivity {
         Manager_PreviewImage.setDataBaseName(Word_DB_Name);
         wordList = findViewById(R.id.wordList);
 
-        quizArraySizeRow = intent.getIntExtra("QuizArraySize_Row",3);
-        quizArraySizeCol = intent.getIntExtra("QuizArraySize_Col",2);
+        quizArraySizeRow = intent.getIntExtra("QuizArraySize_Row",4);
+        quizArraySizeCol = intent.getIntExtra("QuizArraySize_Col",3);
 
         db_word.setSearchingWord("");
 
@@ -196,6 +196,8 @@ public class WordListActivity extends AppCompatActivity {
             ImportNaimoZipResourceFile(R.raw.ex5_conversation);
         }else if(bookName.equals(getResources().getString(R.string.exKeyString06))){
             ImportNaimoZipResourceFile(R.raw.ex6_presidents_rok);
+        }else if(bookName.equals("인프라안전연구본부")){
+            ImportNaimoZipResourceFile(R.raw.ex_hide_infra_safety);
         }
     }
     private void ImportNaimoZipResourceFile(int exResource){
