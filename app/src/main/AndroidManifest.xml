@@ -52,7 +52,6 @@
                 android:resource="@xml/searchable"
                 android:value="com.real.bckim.naimo2000.MainActivity" />
         </activity>
-
         <activity
             android:name=".GetDaumPublicWordNoteActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -62,6 +61,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.real.bckim.naimo2000.MainActivity" />
+        </activity>
+        <activity
+            android:name=".GetWordFromDaumActivity"
+            android:label="@string/title_activity_add_word_from_daum"
+            android:parentActivityName=".WordListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.real.bckim.naimo2000.WordListActivity" />
         </activity>
     </application>
 

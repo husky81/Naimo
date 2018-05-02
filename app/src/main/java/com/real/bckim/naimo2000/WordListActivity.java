@@ -103,6 +103,7 @@ public class WordListActivity extends AppCompatActivity {
     static Bitmap image_bitmap; //메모리 절약을 위해 비트맵은 Activity마다 한개만 쓰면 좋을 듯.
     final static int EmptyImageIconResource= R.drawable.raindrop3; //노트 기본아이콘.
     int REQUEST_CODE_IMPORT_PICTURE_FOLDER = 102;
+    int REQUEST_CODE_GET_WORD = 105;
     int REQ_CODE_FAMILIARITY = 103;
     final int REQ_ADD_CONTACT_PICTURES = 104;
 
@@ -1015,7 +1016,8 @@ public class WordListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                AddWord();
+                //AddWord();
+                AddWordFromDaum();
             }
         });
 
@@ -1093,6 +1095,11 @@ public class WordListActivity extends AppCompatActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    private void AddWordFromDaum(){
+        Intent intent = new Intent(this, GetWordFromDaumActivity.class);
+        intent.putExtra("WordDBName",Word_DB_Name);
+        startActivityForResult(intent, REQUEST_CODE_GET_WORD);
     }
     private void FabVisibleSetting_SelectMode(){
         FloatingActionButton fab_plus = findViewById(R.id.fab_plus);

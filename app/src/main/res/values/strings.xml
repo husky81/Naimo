@@ -51,5 +51,6 @@
 
     <string name="confirmDeletion">Delete Confirm</string>
     <string name="loading">loading...</string>
+    <string name="title_activity_add_word_from_daum">AddWordFromDaumActivity</string>
 
 </resources>
