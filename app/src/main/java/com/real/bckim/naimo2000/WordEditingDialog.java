@@ -305,7 +305,7 @@ class WordEditingDialog {
         txt= Manager_TxtMathTools.WrapedText(txt,"<meta property=\"og:description\" content=\"","\">");
         return txt;
     }
-    public class webViewClient_pronunciation extends WebViewClient {
+    public static class webViewClient_pronunciation extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             String tmpUri = Uri.parse(url).getHost();

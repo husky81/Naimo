@@ -12,6 +12,8 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.text.BreakIterator;
+
 import static com.real.bckim.naimo2000.WordListActivity.txtMeanings;
 import static com.real.bckim.naimo2000.WordListActivity.txtPronunciation;
 
@@ -43,10 +45,11 @@ public class GetWordFromDaumActivity extends AppCompatActivity {
                 view.loadUrl("javascript:window.Android.getHtml(document.getElementsByTagName('html')[0].innerHTML);"); //<html></html> 사이에 있는 모든 html을 넘겨준다.
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
+
                     public void run() {
                         // yourMethod();
-                        pronText.setText(txtPronunciation);
-                        meanText.setText(txtMeanings);
+                        // pronText.setText(txtPronunciation);
+                        // meanText.setText(txtMeanings);
                     }
                 }, 100);
                 //출처: http://jabstorage.tistory.com/5 [개발자 블로그]
@@ -57,14 +60,15 @@ public class GetWordFromDaumActivity extends AppCompatActivity {
             @JavascriptInterface
             public void getHtml(String html) { //위 자바스크립트가 호출되면 여기로 html이 반환됨
                 System.out.println(html);
-                txtPronunciation = FindPronunciationFromDaumEndic(html);
-                txtMeanings = FindMeaningsFromDaumEndic(html);
-                txtMeanings = delete123(txtMeanings);
+                //txtPronunciation = FindPronunciationFromDaumEndic(html);
+                //txtMeanings = FindMeaningsFromDaumEndic(html);
+                //txtMeanings = delete123(txtMeanings);
             }
         }
         wb.addJavascriptInterface(new MyJavascriptInterface2(), "Android");
 
-        searchText = Manager_TxtMathTools.ReplaceText(searchText," ","+");
+        String searchText = "";
+        searchText = Manager_TxtMathTools.ReplaceText(searchText, " ", "+");
         String DaumEndicUrl = "http://dic.daum.net/search.do?q=" + searchText;
 
         wb.getSettings().setBuiltInZoomControls(true);

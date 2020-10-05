@@ -198,7 +198,7 @@ public class WordListActivity extends AppCompatActivity {
         }else if(bookName.equals(getResources().getString(R.string.exKeyString06))){
             ImportNaimoZipResourceFile(R.raw.ex6_presidents_rok);
         }else if(bookName.equals("인프라안전연구본부")){
-            ImportNaimoZipResourceFile(R.raw.ex_hide_infra_safety);
+            //ImportNaimoZipResourceFile(R.raw.ex_hide_infra_safety);
         }
     }
     private void ImportNaimoZipResourceFile(int exResource){
